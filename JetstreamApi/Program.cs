@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using JetstreamApi.Models;
+using JetstreamApi.Services;
+using Serilog;
+
+
 
 namespace JetstreamApi
 {
@@ -7,12 +13,38 @@ namespace JetstreamApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add Serilogger
+            var logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger);
+
+            builder.Services.AddDbContext<ServiceRequestDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceRequestDbConnectionString")));
+
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
+
+            // Configure CORS 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("http://127.0.0.1:5502","http://localhost:5502")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -25,8 +57,11 @@ namespace JetstreamApi
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseCors();
 
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.MapControllers();
 
