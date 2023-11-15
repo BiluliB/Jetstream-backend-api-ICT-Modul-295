@@ -1,10 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace JetstreamApi.DTOs
+namespace JetstreamApi.DTO
 {
     public class ServiceRequestDTO
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -24,7 +24,7 @@ namespace JetstreamApi.DTOs
         public string Phone { get; set; }
 
         [Required]
-        public string Priority { get; set; }
+        public int Priority { get; set; }
 
         [Required]
         public DateTime CreateDate { get; set; }
@@ -33,7 +33,13 @@ namespace JetstreamApi.DTOs
         public DateTime PickupDate { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue)]
+        public int ServiceId { get; set; }
+
+        [Required]
         public decimal Price { get; set; }
+        public int StatusId { get; set; }
+
+        [MaxLength(500)]
+        public string Comment { get; set; }
     }
 }

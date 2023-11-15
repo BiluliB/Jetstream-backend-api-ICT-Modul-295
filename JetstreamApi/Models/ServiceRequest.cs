@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JetstreamApi.Models
 {
@@ -16,23 +17,33 @@ namespace JetstreamApi.Models
         public string Lastname { get; set; }
 
         [Required]
-        [EmailAddress] 
-        public string Email { get; set;}
+        [EmailAddress]
+        public string Email { get; set; }
 
         [Required]
-        [Phone] 
-        public string Phone { get; set;}
+        [Phone]
+        public string Phone { get; set; }
 
         [Required]
-        public string Priority { get; set; }
+        public int Priority { get; set; }
 
         [Required]
-        public DateTime CreatDate { get; set; }
+        public DateTime CreateDate { get; set; }
 
         [Required]
         public DateTime PickupDate { get; set; }
 
+        [ForeignKey("Status")]
+        public int ServiceId { get; set; }
+
         [Required]
-        public string Price { get; set; }
+        public decimal Price { get; set; }
+
+
+        [Required]
+        public int StatusId { get; set; }
+
+        [StringLength(500)]
+        public string Comment { get; set; }
     }
 }

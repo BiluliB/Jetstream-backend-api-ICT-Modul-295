@@ -1,15 +1,16 @@
-﻿using JetstreamApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using JetstreamApi.DTO;
+using JetstreamApi.DTOs;
 
 namespace JetstreamApi.Services
 {
     public interface IServiceRequestService
     {
-        Task<IEnumerable<ServiceRequest>> GetAllServiceRequestsAsync();
-        Task<ServiceRequest> GetServiceRequestByIdAsync(int id);
-        Task<ServiceRequest> CreateServiceRequestAsync(ServiceRequest serviceRequest);
-        Task UpdateServiceRequestAsync(ServiceRequest serviceRequest);
+        Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync();
+        Task<ServiceRequestDTO> GetServiceRequestByIdAsync(int id);
+        Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto);
+        Task UpdateServiceRequestAsync(ServiceRequestUpdateDTO dto);
         Task DeleteServiceRequestAsync(int id);
     }
 }

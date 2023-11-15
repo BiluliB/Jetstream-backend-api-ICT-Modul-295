@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using JetstreamApi.Models;
 using JetstreamApi.Services;
+using JetstreamApi.Data;
 using Serilog;
-
-
 
 namespace JetstreamApi
 {
@@ -22,7 +20,7 @@ namespace JetstreamApi
             builder.Logging.ClearProviders();
             builder.Logging.AddSerilog(logger);
 
-            builder.Services.AddDbContext<ServiceRequestDbContext>(options =>
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceRequestDbConnectionString")));
 
             // Add services to the container.
