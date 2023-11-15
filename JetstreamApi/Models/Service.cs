@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace JetstreamApi.DTO
+namespace JetstreamApi.Models
 {
-    public class UserDTO
+    public class Service
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public string UserName { get; set; }
-
+        [MaxLength(50)]
+        public string ServiceName { get; set; }
     }
 }

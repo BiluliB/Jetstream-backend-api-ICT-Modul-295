@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using JetstreamApi.DTO;
-using JetstreamApi.Services;
 using System.Threading.Tasks;
 using JetstreamApi.DTOs;
+using JetstreamApi.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JetstreamApi.Controllers
 {
@@ -17,13 +18,13 @@ namespace JetstreamApi.Controllers
             _serviceRequestService = serviceRequestService;
         }
 
-        // GET: api/ServiceRequests
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAllServiceRequests()
+        public async Task<IActionResult> GetAllServiceRequests([FromQuery] string sort = "default")
         {
-            var serviceRequestDTOs = await _serviceRequestService.GetAllServiceRequestsAsync();
+            var serviceRequestDTOs = await _serviceRequestService.GetAllServiceRequestsAsync(sort);
             return Ok(serviceRequestDTOs);
         }
 
@@ -40,6 +41,8 @@ namespace JetstreamApi.Controllers
             }
             return Ok(serviceRequestDTO);
         }
+
+        
 
         // POST: api/ServiceRequests
         [HttpPost]

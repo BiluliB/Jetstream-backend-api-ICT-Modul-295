@@ -12,10 +12,41 @@ namespace JetstreamApi.Data
         }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<Status> Status { get; set; }
+        public DbSet<Priority> Priorities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.UserName)
+                .IsUnique();
+
+            modelBuilder.Entity<Service>().HasData(
+        new Service { Id = 1, ServiceName = "Kleiner Service" },
+        new Service { Id = 2, ServiceName = "Großer Service" },
+        new Service { Id = 3, ServiceName = "Rennskiservice" },
+        new Service { Id = 4, ServiceName = "Bindung montieren und einstellen" },
+        new Service { Id = 5, ServiceName = "Fell zuschneiden" },
+        new Service { Id = 6, ServiceName = "Heißwachsen" }
+    );
+
+            // Seed Daten für Status
+            modelBuilder.Entity<Status>().HasData(
+                new Status { Id = 1, StatusName = "Offen" },
+                new Status { Id = 2, StatusName = "In Arbeit" },
+                new Status { Id = 3, StatusName = "Abgeschlossen" },
+                new Status { Id = 4, StatusName = "Storniert" }
+            );
+
+            // Seed Daten für Priorities
+            modelBuilder.Entity<Priority>().HasData(
+                new Priority { Id = 1, PriorityName = "Tief" },
+                new Priority { Id = 2, PriorityName = "Standard" },
+                new Priority { Id = 3, PriorityName = "Hoch" }
+            );
 
             // Seed für Services
             modelBuilder.Entity<ServiceRequest>().HasData(

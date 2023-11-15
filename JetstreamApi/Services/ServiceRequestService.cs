@@ -1,6 +1,7 @@
 ﻿using JetstreamApi.Data;
 using JetstreamApi.DTO;
 using JetstreamApi.DTOs;
+using JetstreamApi.Interfaces;
 using JetstreamApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace JetstreamApi.Services
 {
     public class ServiceRequestService : IServiceRequestService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context; 
 
         public ServiceRequestService(ApplicationDbContext context)
         {
@@ -62,6 +63,48 @@ namespace JetstreamApi.Services
             };
         }
 
+        public async Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync(string sort)
+        {
+            IQueryable<ServiceRequest> query = _context.ServiceRequests;
+
+            // Standard-Sortierung basierend auf Status und PickupDate
+            if (sort == "default")
+            {
+                query = query.OrderBy(sr => sr.StatusId == 4) // storniert
+                             .ThenBy(sr => sr.StatusId == 3) // abgeschlossen
+                             .ThenBy(sr => sr.StatusId == 2) // in Arbeit
+                             .ThenBy(sr => sr.StatusId == 1) // offen
+                             .ThenBy(sr => sr.PickupDate);
+            }
+            // Sortierung nach Priorität und PickupDate
+            else if (sort == "priority")
+            {
+                query = query.OrderByDescending(sr => sr.Priority)
+                             .ThenBy(sr => sr.PickupDate);
+            }
+
+            var serviceRequests = await query.ToListAsync();
+            var serviceRequestDTOs = serviceRequests.Select(sr => new ServiceRequestDTO
+            {
+                Id = sr.Id,
+                Firstname = sr.Firstname, 
+                Lastname = sr.Lastname,
+                Email = sr.Email,
+                Phone = sr.Phone,
+                Priority = sr.Priority,
+                CreateDate = sr.CreateDate,
+                PickupDate = sr.PickupDate,
+                ServiceId = sr.ServiceId,
+                Price = sr.Price,
+                StatusId = sr.StatusId,
+                Comment = sr.Comment,                
+            }).ToList();
+
+            return serviceRequestDTOs;
+        }
+
+
+
         public async Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto)
         {
             var serviceRequest = new ServiceRequest
@@ -105,7 +148,7 @@ namespace JetstreamApi.Services
             var serviceRequest = await _context.ServiceRequests.FindAsync(dto.Id);
             if (serviceRequest != null)
             {
-                // Aktualisieren der Eigenschaften von serviceRequest mit den Werten aus dto
+             
                 serviceRequest.Firstname = dto.Firstname;
                 serviceRequest.Lastname = dto.Lastname;
                 serviceRequest.Email = dto.Email;

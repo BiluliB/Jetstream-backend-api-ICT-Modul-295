@@ -8,7 +8,7 @@ namespace JetstreamApi.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLengthAttribute(50)]
+        [MaxLength(50)]
         public string StatusName { get; set; }
 
     }

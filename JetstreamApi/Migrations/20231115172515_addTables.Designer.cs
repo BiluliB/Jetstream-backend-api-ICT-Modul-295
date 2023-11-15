@@ -4,6 +4,7 @@ using JetstreamApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JetstreamApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231115172515_addTables")]
+    partial class addTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,12 +168,12 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 1,
                             Comment = "Erster Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(5988),
+                            CreateDate = new DateTime(2023, 11, 15, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5708),
                             Email = "max.mustermann@example.com",
                             Firstname = "Max",
                             Lastname = "Mustermann",
                             Phone = "1234567890",
-                            PickupDate = new DateTime(2023, 11, 16, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6043),
+                            PickupDate = new DateTime(2023, 11, 16, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5753),
                             Price = 100.00m,
                             Priority = 1,
                             ServiceId = 1,
@@ -180,12 +183,12 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 2,
                             Comment = "Zweiter Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6054),
+                            CreateDate = new DateTime(2023, 11, 15, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5760),
                             Email = "maria.musterfrau@example.com",
                             Firstname = "Maria",
                             Lastname = "Musterfrau",
                             Phone = "0987654321",
-                            PickupDate = new DateTime(2023, 11, 17, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6055),
+                            PickupDate = new DateTime(2023, 11, 17, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5761),
                             Price = 80.50m,
                             Priority = 2,
                             ServiceId = 2,
@@ -195,12 +198,12 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 3,
                             Comment = "Dritter Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6059),
+                            CreateDate = new DateTime(2023, 11, 15, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5764),
                             Email = "johannes.doe@example.com",
                             Firstname = "Johannes",
                             Lastname = "Doe",
                             Phone = "1122334455",
-                            PickupDate = new DateTime(2023, 11, 18, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6060),
+                            PickupDate = new DateTime(2023, 11, 18, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5765),
                             Price = 75.00m,
                             Priority = 1,
                             ServiceId = 3,
@@ -210,12 +213,12 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 4,
                             Comment = "Vierter Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6062),
+                            CreateDate = new DateTime(2023, 11, 15, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5767),
                             Email = "anna.beispiel@example.com",
                             Firstname = "Anna",
                             Lastname = "Beispiel",
                             Phone = "2233445566",
-                            PickupDate = new DateTime(2023, 11, 19, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6063),
+                            PickupDate = new DateTime(2023, 11, 19, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5768),
                             Price = 120.00m,
                             Priority = 3,
                             ServiceId = 4,
@@ -225,12 +228,12 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 5,
                             Comment = "Fünfter Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6066),
+                            CreateDate = new DateTime(2023, 11, 15, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5771),
                             Email = "lukas.muster@example.com",
                             Firstname = "Lukas",
                             Lastname = "Muster",
                             Phone = "3344556677",
-                            PickupDate = new DateTime(2023, 11, 20, 20, 55, 37, 573, DateTimeKind.Local).AddTicks(6066),
+                            PickupDate = new DateTime(2023, 11, 20, 18, 25, 15, 502, DateTimeKind.Local).AddTicks(5771),
                             Price = 200.00m,
                             Priority = 2,
                             ServiceId = 5,
@@ -286,22 +289,7 @@ namespace JetstreamApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserName")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });

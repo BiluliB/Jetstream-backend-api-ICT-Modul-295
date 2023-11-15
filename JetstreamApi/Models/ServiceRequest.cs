@@ -24,7 +24,7 @@ namespace JetstreamApi.Models
         [Phone]
         public string Phone { get; set; }
 
-        [Required]
+        [ForeignKey("Priority")]
         public int Priority { get; set; }
 
         [Required]
@@ -33,14 +33,14 @@ namespace JetstreamApi.Models
         [Required]
         public DateTime PickupDate { get; set; }
 
-        [ForeignKey("Status")]
+        [ForeignKey("Service")]
         public int ServiceId { get; set; }
 
         [Required]
         public decimal Price { get; set; }
 
 
-        [Required]
+        [ForeignKey("Staus")]
         public int StatusId { get; set; }
 
         [StringLength(500)]
