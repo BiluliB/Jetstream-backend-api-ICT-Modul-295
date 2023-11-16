@@ -23,7 +23,7 @@ namespace JetstreamApi.DTOs
         public string Phone { get; set; }
 
         [Required]
-        public int Priority { get; set; }
+        public int PriorityId { get; set; }
 
         [Required]
         public DateTime CreateDate { get; set; }

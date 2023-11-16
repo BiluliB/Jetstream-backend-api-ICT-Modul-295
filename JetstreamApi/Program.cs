@@ -36,16 +36,7 @@ namespace JetstreamApi
             builder.Services.AddControllers();
            
 
-            // Configure CORS 
-            builder.Services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(policy =>
-                {
-                    policy.WithOrigins("http://127.0.0.1:5502","http://localhost:5502")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
-            });
+            
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -105,7 +96,8 @@ namespace JetstreamApi
 
             app.UseHttpsRedirection();
 
-            app.UseCors();
+            app.UseDefaultFiles();
+            app.UseStaticFiles(); 
 
             app.UseAuthentication();
 

@@ -4,6 +4,7 @@ using JetstreamApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JetstreamApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231115212013_someFixes")]
+    partial class someFixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,7 +150,7 @@ namespace JetstreamApi.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("PriorityId")
+                    b.Property<int>("Priority")
                         .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
@@ -158,12 +161,6 @@ namespace JetstreamApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PriorityId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.HasIndex("StatusId");
-
                     b.ToTable("ServiceRequests");
 
                     b.HasData(
@@ -171,14 +168,14 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 1,
                             Comment = "Erster Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(391),
+                            CreateDate = new DateTime(2023, 11, 15, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8638),
                             Email = "max.mustermann@example.com",
                             Firstname = "Max",
                             Lastname = "Mustermann",
                             Phone = "1234567890",
-                            PickupDate = new DateTime(2023, 11, 16, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(433),
+                            PickupDate = new DateTime(2023, 11, 16, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8680),
                             Price = 100.00m,
-                            PriorityId = 1,
+                            Priority = 1,
                             ServiceId = 1,
                             StatusId = 1
                         },
@@ -186,14 +183,14 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 2,
                             Comment = "Zweiter Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(440),
+                            CreateDate = new DateTime(2023, 11, 15, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8688),
                             Email = "maria.musterfrau@example.com",
                             Firstname = "Maria",
                             Lastname = "Musterfrau",
                             Phone = "0987654321",
-                            PickupDate = new DateTime(2023, 11, 17, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(441),
+                            PickupDate = new DateTime(2023, 11, 17, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8689),
                             Price = 80.50m,
-                            PriorityId = 2,
+                            Priority = 2,
                             ServiceId = 2,
                             StatusId = 2
                         },
@@ -201,14 +198,14 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 3,
                             Comment = "Dritter Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(444),
+                            CreateDate = new DateTime(2023, 11, 15, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8692),
                             Email = "johannes.doe@example.com",
                             Firstname = "Johannes",
                             Lastname = "Doe",
                             Phone = "1122334455",
-                            PickupDate = new DateTime(2023, 11, 18, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(444),
+                            PickupDate = new DateTime(2023, 11, 18, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8692),
                             Price = 75.00m,
-                            PriorityId = 1,
+                            Priority = 1,
                             ServiceId = 3,
                             StatusId = 3
                         },
@@ -216,14 +213,14 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 4,
                             Comment = "Vierter Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(447),
+                            CreateDate = new DateTime(2023, 11, 15, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8695),
                             Email = "anna.beispiel@example.com",
                             Firstname = "Anna",
                             Lastname = "Beispiel",
                             Phone = "2233445566",
-                            PickupDate = new DateTime(2023, 11, 19, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(448),
+                            PickupDate = new DateTime(2023, 11, 19, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8696),
                             Price = 120.00m,
-                            PriorityId = 3,
+                            Priority = 3,
                             ServiceId = 4,
                             StatusId = 2
                         },
@@ -231,14 +228,14 @@ namespace JetstreamApi.Migrations
                         {
                             Id = 5,
                             Comment = "Fünfter Kommentar",
-                            CreateDate = new DateTime(2023, 11, 15, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(450),
+                            CreateDate = new DateTime(2023, 11, 15, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8698),
                             Email = "lukas.muster@example.com",
                             Firstname = "Lukas",
                             Lastname = "Muster",
                             Phone = "3344556677",
-                            PickupDate = new DateTime(2023, 11, 20, 22, 46, 13, 768, DateTimeKind.Local).AddTicks(451),
+                            PickupDate = new DateTime(2023, 11, 20, 22, 20, 13, 273, DateTimeKind.Local).AddTicks(8698),
                             Price = 200.00m,
-                            PriorityId = 2,
+                            Priority = 2,
                             ServiceId = 5,
                             StatusId = 1
                         });
@@ -310,33 +307,6 @@ namespace JetstreamApi.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("JetstreamApi.Models.ServiceRequest", b =>
-                {
-                    b.HasOne("JetstreamApi.Models.Priority", "Priority")
-                        .WithMany()
-                        .HasForeignKey("PriorityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JetstreamApi.Models.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JetstreamApi.Models.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Priority");
-
-                    b.Navigation("Service");
-
-                    b.Navigation("Status");
                 });
 #pragma warning restore 612, 618
         }

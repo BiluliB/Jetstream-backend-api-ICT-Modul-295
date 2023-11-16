@@ -30,7 +30,7 @@ namespace JetstreamApi.Services
                 Lastname = request.Lastname,
                 Email = request.Email,
                 Phone = request.Phone,
-                Priority = request.Priority,
+                PriorityId = request.PriorityId,
                 CreateDate = request.CreateDate,
                 PickupDate = request.PickupDate,
                 ServiceId = request.ServiceId,
@@ -53,7 +53,7 @@ namespace JetstreamApi.Services
                 Lastname = serviceRequest.Lastname,
                 Email = serviceRequest.Email,
                 Phone = serviceRequest.Phone,
-                Priority = serviceRequest.Priority,
+                PriorityId = serviceRequest.PriorityId,
                 CreateDate = serviceRequest.CreateDate,
                 PickupDate = serviceRequest.PickupDate,
                 ServiceId = serviceRequest.ServiceId,
@@ -76,10 +76,11 @@ namespace JetstreamApi.Services
                              .ThenBy(sr => sr.StatusId == 1) // offen
                              .ThenBy(sr => sr.PickupDate);
             }
+
             // Sortierung nach Priorität und PickupDate
             else if (sort == "priority")
             {
-                query = query.OrderByDescending(sr => sr.Priority)
+                query = query.OrderByDescending(sr => sr.PriorityId)
                              .ThenBy(sr => sr.PickupDate);
             }
 
@@ -91,7 +92,7 @@ namespace JetstreamApi.Services
                 Lastname = sr.Lastname,
                 Email = sr.Email,
                 Phone = sr.Phone,
-                Priority = sr.Priority,
+                PriorityId = sr.PriorityId,
                 CreateDate = sr.CreateDate,
                 PickupDate = sr.PickupDate,
                 ServiceId = sr.ServiceId,
@@ -114,7 +115,7 @@ namespace JetstreamApi.Services
                 Lastname = dto.Lastname,
                 Email = dto.Email,
                 Phone = dto.Phone,
-                Priority = dto.Priority,
+                PriorityId = dto.PriorityId,
                 CreateDate = dto.CreateDate,
                 PickupDate = dto.PickupDate,
                 ServiceId = dto.ServiceId,
@@ -133,7 +134,7 @@ namespace JetstreamApi.Services
                 Lastname = serviceRequest.Lastname,
                 Email = serviceRequest.Email,
                 Phone = serviceRequest.Phone,
-                Priority = serviceRequest.Priority,
+                PriorityId = serviceRequest.PriorityId,
                 CreateDate = serviceRequest.CreateDate,
                 PickupDate = serviceRequest.PickupDate,
                 ServiceId = serviceRequest.ServiceId,
@@ -153,7 +154,7 @@ namespace JetstreamApi.Services
                 serviceRequest.Lastname = dto.Lastname;
                 serviceRequest.Email = dto.Email;
                 serviceRequest.Phone = dto.Phone;
-                serviceRequest.Priority = dto.Priority;
+                serviceRequest.PriorityId = dto.PriorityId;
                 serviceRequest.CreateDate = dto.CreateDate;
                 serviceRequest.PickupDate = dto.PickupDate;
                 serviceRequest.ServiceId = dto.ServiceId;

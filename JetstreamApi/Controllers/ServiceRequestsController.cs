@@ -19,7 +19,7 @@ namespace JetstreamApi.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllServiceRequests([FromQuery] string sort = "default")
@@ -42,8 +42,6 @@ namespace JetstreamApi.Controllers
             return Ok(serviceRequestDTO);
         }
 
-        
-
         // POST: api/ServiceRequests
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -60,7 +58,9 @@ namespace JetstreamApi.Controllers
         }
 
         // PUT: api/ServiceRequests/{id}
+        
         [HttpPut("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

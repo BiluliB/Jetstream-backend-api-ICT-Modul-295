@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JetstreamApi.Controllers
 {
+    [ApiController]
+    [Route("api/users")]
     public class UsersController : Controller
     {
         private readonly IUserService _userService;

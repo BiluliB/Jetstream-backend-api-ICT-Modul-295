@@ -2,7 +2,7 @@
 
 namespace JetstreamApi.Controllers
 {
-    public class AuthController : Controller
+    public class PrioritiesController : Controller
     {
         public IActionResult Index()
         {
