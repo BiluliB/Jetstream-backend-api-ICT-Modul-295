@@ -11,6 +11,6 @@ namespace JetstreamApi.Interfaces
         Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync(string sort);
         Task<List<ServiceRequestDTO>> GetAllServiceRequestsByPriorty(int protity);
         Task<ServiceRequestDTO> GetServiceRequestByIdAsync(int id);
-        Task UpdateServiceRequestAsync(ServiceRequestUpdateDTO dto);
+        Task<ServiceRequestDTO> UpdateServiceRequestAsync(int id, ServiceRequestUpdateDTO dto);
     }
 }

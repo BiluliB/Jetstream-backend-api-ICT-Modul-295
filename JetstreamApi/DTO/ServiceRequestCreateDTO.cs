@@ -4,7 +4,6 @@ namespace JetstreamApi.DTOs
 {
     public class ServiceRequestCreateDTO
     {
-        public int Id { get; set; }
         [Required]
         [MaxLength(50)]
         public string Firstname { get; set; }
@@ -32,10 +31,6 @@ namespace JetstreamApi.DTOs
 
         [Required]
         public int ServiceId { get; set; } 
-
-        [Required]
-        public decimal Price { get; set; }
-        public int StatusId { get; set; }
 
         [MaxLength(500)]
         public string Comment { get; set; }

@@ -75,21 +75,14 @@ namespace JetstreamApi.Controllers
             {
                 return BadRequest(ModelState);
             }
+  
 
-            if (id != serviceRequestUpdateDTO.Id)
-            {
-                return BadRequest("Die ID in der URL stimmt nicht mit der ID im Body überein.");
-            }
-
-            var existingServiceRequest = await _serviceRequestService.GetServiceRequestByIdAsync(id);
-            if (existingServiceRequest == null)
+            var updatedServiceRequest = await _serviceRequestService.UpdateServiceRequestAsync(id, serviceRequestUpdateDTO);
+            if (updatedServiceRequest == null)
             {
                 return NotFound();
             }
-
-            
-            await _serviceRequestService.UpdateServiceRequestAsync(serviceRequestUpdateDTO);
-            return Ok(serviceRequestUpdateDTO);
+            return Ok(updatedServiceRequest);
         }
 
         // DELETE: api/ServiceRequests/{id}

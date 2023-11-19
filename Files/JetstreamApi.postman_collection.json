@@ -1,0 +1,247 @@
+{
+	"info": {
+		"_postman_id": "07bee8f5-fc49-4e77-9fab-0596e0224d0e",
+		"name": "JetstreamApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29156451"
+	},
+	"item": [
+		{
+			"name": "All-ServiceRequests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5039/api/ServiceRequests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5039",
+					"path": [
+						"api",
+						"ServiceRequests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ById-ServiceRequests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5039/api/ServiceRequests/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5039",
+					"path": [
+						"api",
+						"ServiceRequests",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "NewServiceRequest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstname\": \"Test123\",\r\n  \"lastname\": \"Test456\",\r\n  \"email\": \"user@example.com\",\r\n  \"phone\": \"+029 5311284291\",\r\n  \"priorityId\": 2,\r\n  \"createDate\": \"2023-11-19T19:58:15.913Z\",\r\n  \"pickupDate\": \"2023-11-19T19:58:15.913Z\",\r\n  \"serviceId\": 3,\r\n  \"comment\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5039/api/ServiceRequests/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5039",
+					"path": [
+						"api",
+						"ServiceRequests",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ById-UpdateServiceRequest",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstname\": \"Test\",\r\n  \"lastname\": \"Hampelmann2sdf\",\r\n  \"email\": \"user@example.com\",\r\n  \"phone\": \"+589146186641\",\r\n  \"priorityId\": 1,\r\n  \"createDate\": \"2023-11-19T20:16:00.967Z\",\r\n  \"pickupDate\": \"2023-11-19T20:16:00.967Z\",\r\n  \"serviceId\": 1,\r\n  \"price\": 200,\r\n  \"statusId\": 1,\r\n  \"comment\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5039/api/ServiceRequests/6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5039",
+					"path": [
+						"api",
+						"ServiceRequests",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ById-ServiceRequest",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 0,\r\n  \"firstname\": \"string\",\r\n  \"lastname\": \"string\",\r\n  \"email\": \"user@example.com\",\r\n  \"phone\": \"1773066907\",\r\n  \"priorityId\": 0,\r\n  \"priority\": {\r\n    \"id\": 0,\r\n    \"priorityName\": \"string\",\r\n    \"price\": 0\r\n  },\r\n  \"createDate\": \"2023-11-19T19:31:51.390Z\",\r\n  \"pickupDate\": \"2023-11-19T19:31:51.390Z\",\r\n  \"serviceId\": 0,\r\n  \"service\": {\r\n    \"id\": 0,\r\n    \"serviceName\": \"string\",\r\n    \"price\": 0\r\n  },\r\n  \"price\": 0,\r\n  \"statusId\": 0,\r\n  \"status\": {\r\n    \"id\": 0,\r\n    \"statusName\": \"string\"\r\n  },\r\n  \"comment\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5039/api/ServiceRequests/9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5039",
+					"path": [
+						"api",
+						"ServiceRequests",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User-Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()\r",
+							"pm.collectionVariables.set(\"token\", data.value.token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"user1\",\r\n  \"password\": \"Password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/users/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User-Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userName\": \"user1\",\r\n  \"password\": \"Password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "/api/users/create",
+					"path": [
+						"api",
+						"users",
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://localhost:7297",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

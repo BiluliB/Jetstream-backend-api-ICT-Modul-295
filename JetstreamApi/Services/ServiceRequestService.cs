@@ -139,9 +139,22 @@ namespace JetstreamApi.Services
 
         public async Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto)
         {
+            // Fetch prices for Service and Priority
+            var servicePrice = await _context.Services
+                .Where(s => s.Id == dto.ServiceId)
+                .Select(s => s.Price)
+                .FirstOrDefaultAsync();
+
+            var priorityPrice = await _context.Priorities
+                .Where(p => p.Id == dto.PriorityId)
+                .Select(p => p.Price)
+                .FirstOrDefaultAsync();
+
+            // Calculate total price
+            var totalPrice = servicePrice + priorityPrice;
             var serviceRequest = new ServiceRequest
             {
-                Id = dto.Id,
+                
                 Firstname = dto.Firstname,
                 Lastname = dto.Lastname,
                 Email = dto.Email,
@@ -150,12 +163,16 @@ namespace JetstreamApi.Services
                 CreateDate = dto.CreateDate,
                 PickupDate = dto.PickupDate,
                 ServiceId = dto.ServiceId,
-                StatusId = dto.StatusId,
+                StatusId = 1,
                 Comment = dto.Comment
             };
 
             _context.ServiceRequests.Add(serviceRequest);
             await _context.SaveChangesAsync();
+
+            await _context.Entry(serviceRequest).Reference(s => s.Priority).LoadAsync();
+            await _context.Entry(serviceRequest).Reference(s => s.Service).LoadAsync();
+            await _context.Entry(serviceRequest).Reference(s => s.Status).LoadAsync();
 
             return new ServiceRequestDTO
             {
@@ -165,20 +182,23 @@ namespace JetstreamApi.Services
                 Email = serviceRequest.Email,
                 Phone = serviceRequest.Phone,
                 PriorityId = serviceRequest.PriorityId,
+                Priority = serviceRequest.Priority,
                 CreateDate = serviceRequest.CreateDate,
                 PickupDate = serviceRequest.PickupDate,
                 ServiceId = serviceRequest.ServiceId,
+                Service = serviceRequest.Service,
+                Price = totalPrice,
                 StatusId = serviceRequest.StatusId,
+                Status = serviceRequest.Status,
                 Comment = serviceRequest.Comment
             };
         }
 
-        public async Task UpdateServiceRequestAsync(ServiceRequestUpdateDTO dto)
+        public async Task<ServiceRequestDTO?> UpdateServiceRequestAsync(int Id, ServiceRequestUpdateDTO dto)
         {
-            var serviceRequest = await _context.ServiceRequests.FindAsync(dto.Id);
-            if (serviceRequest != null)
-            {
-
+            var serviceRequest = await _context.ServiceRequests.FindAsync(Id);
+            if (serviceRequest == null) return null;
+                            
                 serviceRequest.Firstname = dto.Firstname;
                 serviceRequest.Lastname = dto.Lastname;
                 serviceRequest.Email = dto.Email;
@@ -192,11 +212,29 @@ namespace JetstreamApi.Services
 
                 _context.Entry(serviceRequest).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-            }
-            else
-            {
-                throw new KeyNotFoundException("ServiceRequest not found.");
-            }
+
+                return new ServiceRequestDTO
+                {
+                    Id = serviceRequest.Id,
+                    Firstname = serviceRequest.Firstname,
+                    Lastname = serviceRequest.Lastname,
+                    Email = serviceRequest.Email,
+                    Phone = serviceRequest.Phone,
+                    PriorityId = serviceRequest.PriorityId,
+                    Priority = serviceRequest.Priority,
+                    CreateDate = serviceRequest.CreateDate,
+                    PickupDate = serviceRequest.PickupDate,
+                    ServiceId = serviceRequest.ServiceId,
+                    Service = serviceRequest.Service,
+                    Price = serviceRequest.Priority.Price + serviceRequest.Service.Price,
+                    StatusId = serviceRequest.StatusId,
+                    Status = serviceRequest.Status,
+                    Comment = serviceRequest.Comment
+                };
+            
+            
+            
+                
         }
 
         public async Task DeleteServiceRequestAsync(int id)
