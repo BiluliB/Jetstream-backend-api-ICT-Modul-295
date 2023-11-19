@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using JetstreamApi.DTO;
-using System.Threading.Tasks;
+﻿using JetstreamApi.DTO;
 using JetstreamApi.DTOs;
 using JetstreamApi.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JetstreamApi.Controllers
 {
@@ -18,9 +17,8 @@ namespace JetstreamApi.Controllers
             _serviceRequestService = serviceRequestService;
         }
 
-        [HttpGet]
-        
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet]        
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof (List<ServiceRequestDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllServiceRequests([FromQuery] string sort = "default")
         {
@@ -30,7 +28,7 @@ namespace JetstreamApi.Controllers
 
         // GET: api/ServiceRequests/{id}
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof (ServiceRequestDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetServiceRequestById(int id)
         {
@@ -42,9 +40,18 @@ namespace JetstreamApi.Controllers
             return Ok(serviceRequestDTO);
         }
 
+
+        [HttpGet("priorities/{priority}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestDTO))]
+        public async Task<IActionResult> GetAllServiceRequestsByPriorty(int priority)
+        {
+            var serviceRequestDTOs = await _serviceRequestService.GetAllServiceRequestsByPriorty(priority);
+            return Ok(serviceRequestDTOs);
+        }
+
         // POST: api/ServiceRequests
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestCreateDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateServiceRequest([FromBody] ServiceRequestCreateDTO serviceRequestCreateDTO)
         {
@@ -61,7 +68,7 @@ namespace JetstreamApi.Controllers
         
         [HttpPut("{id}")]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestUpdateDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateServiceRequest(int id, [FromBody] ServiceRequestUpdateDTO serviceRequestUpdateDTO)
@@ -82,7 +89,7 @@ namespace JetstreamApi.Controllers
                 return NotFound();
             }
 
-            // Aktualisieren Sie den ServiceRequest
+            
             await _serviceRequestService.UpdateServiceRequestAsync(serviceRequestUpdateDTO);
             return Ok(serviceRequestUpdateDTO);
         }
@@ -90,9 +97,9 @@ namespace JetstreamApi.Controllers
 
         // DELETE: api/ServiceRequests/{id}
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteServiceRequest(int id)
+        public async Task<IActionResult> DeleteServiceRequest(int id)   
         {
             var serviceRequestDTO = await _serviceRequestService.GetServiceRequestByIdAsync(id);
             if (serviceRequestDTO == null)

@@ -27,7 +27,7 @@ namespace JetstreamApi
             builder.Logging.AddSerilog(logger);
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceRequestDbConnectionString")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceRequestDbConnectionString")).UseLazyLoadingProxies());
 
             // Add services to the container.
             builder.Services.AddSingleton<ITokenService, TokenService>();
@@ -93,6 +93,8 @@ namespace JetstreamApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+                        app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

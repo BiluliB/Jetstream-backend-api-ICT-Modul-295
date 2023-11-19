@@ -1,27 +1,28 @@
 ﻿using JetstreamApi.Data;
 using JetstreamApi.DTO;
 using JetstreamApi.DTOs;
-using JetstreamApi.Interfaces;
 using JetstreamApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JetstreamApi.Interfaces;
 
 namespace JetstreamApi.Services
 {
     public class ServiceRequestService : IServiceRequestService
     {
-        private readonly ApplicationDbContext _context; 
+        private readonly ApplicationDbContext _context;
 
         public ServiceRequestService(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        
         public async Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync()
         {
-            var serviceRequests = await _context.ServiceRequests.ToListAsync();
+            var serviceRequests = await _context.ServiceRequests.Where(s => s.StatusId != 4).ToListAsync();
 
             return serviceRequests.Select(request => new ServiceRequestDTO
             {
@@ -31,20 +32,29 @@ namespace JetstreamApi.Services
                 Email = request.Email,
                 Phone = request.Phone,
                 PriorityId = request.PriorityId,
+                Priority = request.Priority,
                 CreateDate = request.CreateDate,
                 PickupDate = request.PickupDate,
                 ServiceId = request.ServiceId,
-                Price = request.Price,
+                Service = request.Service,
                 StatusId = request.StatusId,
+                Status = request.Status,
                 Comment = request.Comment
             }).ToList();
         }
 
         public async Task<ServiceRequestDTO> GetServiceRequestByIdAsync(int id)
         {
-            var serviceRequest = await _context.ServiceRequests.FindAsync(id);
+            ServiceRequest? serviceRequest = null;
 
-            if (serviceRequest == null) return null;
+            try
+            {
+                serviceRequest = await _context.ServiceRequests.FirstAsync(s => s.StatusId != 4 && s.Id == id);
+            }catch (Exception ex)
+            {
+                return null;
+            }
+            
 
             return new ServiceRequestDTO
             {
@@ -54,18 +64,43 @@ namespace JetstreamApi.Services
                 Email = serviceRequest.Email,
                 Phone = serviceRequest.Phone,
                 PriorityId = serviceRequest.PriorityId,
+                Priority = serviceRequest.Priority,
                 CreateDate = serviceRequest.CreateDate,
                 PickupDate = serviceRequest.PickupDate,
                 ServiceId = serviceRequest.ServiceId,
-                Price = serviceRequest.Price,
+                Service = serviceRequest.Service,
                 StatusId = serviceRequest.StatusId,
+                Status = serviceRequest.Status,
                 Comment = serviceRequest.Comment
             };
         }
 
+        public async Task<List<ServiceRequestDTO>> GetAllServiceRequestsByPriorty(int protity)
+        {
+            var priorities = await _context.ServiceRequests.Where(s => s.PriorityId == protity).ToListAsync();
+
+            return priorities.Select(request => new ServiceRequestDTO
+            {
+                Id = request.Id,
+                Firstname = request.Firstname,
+                Lastname = request.Lastname,
+                Email = request.Email,
+                Phone = request.Phone,
+                PriorityId = request.PriorityId,
+                Priority = request.Priority,
+                CreateDate = request.CreateDate,
+                PickupDate = request.PickupDate,
+                ServiceId = request.ServiceId,
+                Service = request.Service,
+                StatusId = request.StatusId,
+                Status = request.Status,
+                Comment = request.Comment
+            }).ToList();
+        }
+
         public async Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync(string sort)
         {
-            IQueryable<ServiceRequest> query = _context.ServiceRequests;
+            IQueryable<ServiceRequest> query = _context.ServiceRequests.Where(s => s.StatusId != 4);
 
             // Standard-Sortierung basierend auf Status und PickupDate
             if (sort == "default")
@@ -88,17 +123,19 @@ namespace JetstreamApi.Services
             var serviceRequestDTOs = serviceRequests.Select(sr => new ServiceRequestDTO
             {
                 Id = sr.Id,
-                Firstname = sr.Firstname, 
+                Firstname = sr.Firstname,
                 Lastname = sr.Lastname,
                 Email = sr.Email,
                 Phone = sr.Phone,
                 PriorityId = sr.PriorityId,
+                Priority = sr.Priority,
                 CreateDate = sr.CreateDate,
                 PickupDate = sr.PickupDate,
                 ServiceId = sr.ServiceId,
-                Price = sr.Price,
+                Service = sr.Service,
                 StatusId = sr.StatusId,
-                Comment = sr.Comment,                
+                Status = sr.Status,
+                Comment = sr.Comment,
             }).ToList();
 
             return serviceRequestDTOs;
@@ -109,7 +146,7 @@ namespace JetstreamApi.Services
         public async Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto)
         {
             var serviceRequest = new ServiceRequest
-            {   
+            {
                 Id = dto.Id,
                 Firstname = dto.Firstname,
                 Lastname = dto.Lastname,
@@ -119,7 +156,6 @@ namespace JetstreamApi.Services
                 CreateDate = dto.CreateDate,
                 PickupDate = dto.PickupDate,
                 ServiceId = dto.ServiceId,
-                Price = dto.Price,
                 StatusId = dto.StatusId,
                 Comment = dto.Comment
             };
@@ -138,7 +174,6 @@ namespace JetstreamApi.Services
                 CreateDate = serviceRequest.CreateDate,
                 PickupDate = serviceRequest.PickupDate,
                 ServiceId = serviceRequest.ServiceId,
-                Price = serviceRequest.Price,
                 StatusId = serviceRequest.StatusId,
                 Comment = serviceRequest.Comment
             };
@@ -149,7 +184,7 @@ namespace JetstreamApi.Services
             var serviceRequest = await _context.ServiceRequests.FindAsync(dto.Id);
             if (serviceRequest != null)
             {
-             
+
                 serviceRequest.Firstname = dto.Firstname;
                 serviceRequest.Lastname = dto.Lastname;
                 serviceRequest.Email = dto.Email;
@@ -158,7 +193,6 @@ namespace JetstreamApi.Services
                 serviceRequest.CreateDate = dto.CreateDate;
                 serviceRequest.PickupDate = dto.PickupDate;
                 serviceRequest.ServiceId = dto.ServiceId;
-                serviceRequest.Price = dto.Price;
                 serviceRequest.StatusId = dto.StatusId;
                 serviceRequest.Comment = dto.Comment;
 
@@ -177,7 +211,8 @@ namespace JetstreamApi.Services
             var serviceRequest = await _context.ServiceRequests.FindAsync(id);
             if (serviceRequest != null)
             {
-                _context.ServiceRequests.Remove(serviceRequest);
+                serviceRequest.StatusId = 4;
+                //_context.ServiceRequests.Remove(serviceRequest);
                 await _context.SaveChangesAsync();
             }
             else

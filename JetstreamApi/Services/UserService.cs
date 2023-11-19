@@ -31,10 +31,34 @@ namespace JetstreamApi.Services
         public bool VerifyPassword(string username, string password)
         {
             var user = _context.Users.FirstOrDefault(u => u.UserName == username);
-            if (user == null) return false;
+            if (user == null) throw new ArgumentException("Benutzername nicht gefunden.");
 
-            return VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt);
+            if (user.IsLocked)
+            {
+                throw new InvalidOperationException("Benutzerkonto ist gesperrt.");
+            }
+
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            {
+                user.PasswordInputAttempt += 1;
+                if (user.PasswordInputAttempt >= 3)
+                {
+                    user.IsLocked = true;
+                    _context.SaveChanges();
+                    throw new InvalidOperationException("Benutzerkonto wurde wegen zu vieler fehlgeschlagener Versuche gesperrt.");
+                }
+
+                _context.SaveChanges();
+                throw new ArgumentException("Falsches Passwort.");
+            }
+
+            // Erfolgreiche Passworteingabe
+            user.PasswordInputAttempt = 0;
+            _context.SaveChanges();
+            return true;
         }
+
+
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {

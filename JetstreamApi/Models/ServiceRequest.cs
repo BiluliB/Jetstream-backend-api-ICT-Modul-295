@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Proxies;
 
 namespace JetstreamApi.Models
 {
@@ -26,6 +27,7 @@ namespace JetstreamApi.Models
 
         [Required]
         public int PriorityId { get; set; }
+        public virtual Priority Priority { get; set; }
 
         [Required]
         public DateTime CreateDate { get; set; }
@@ -35,25 +37,31 @@ namespace JetstreamApi.Models
 
         [Required]
         public int ServiceId { get; set; }
-
-        [Required]
-        public decimal Price { get; set; }
+        public virtual Service Service { get; set; }
 
 
         [Required]
         public int StatusId { get; set; }
+        public virtual Status Status { get; set; }
 
         [StringLength(500)]
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
+
+        public int? UserId { get; set; }
+        public virtual User User { get; set; }
 
 
-        [ForeignKey("ServiceId")]
-        public virtual Service Service { get; set; }
 
-        [ForeignKey("PriorityId")]
-        public virtual Priority Priority { get; set; }
 
-        [ForeignKey("StatusId")]
-        public virtual Status Status { get; set; }
+       
+        
+
+       
+       
+
+        
+        
+
+
     }
 }

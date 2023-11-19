@@ -1,5 +1,6 @@
 ﻿using JetstreamApi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace JetstreamApi.Data
 {
@@ -13,25 +14,35 @@ namespace JetstreamApi.Data
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Service> Services { get; set; }
-        public DbSet<Status> Status { get; set; }
+        public DbSet<Status> Statuses { get; set; }
         public DbSet<Priority> Priorities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+           
             base.OnModelCreating(modelBuilder);
 
+            
+            //Das UserName nur einmal vorkommen kann
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserName)
                 .IsUnique();
 
+
+
+                   
+
+
+            // Seed Daten für Service
             modelBuilder.Entity<Service>().HasData(
-        new Service { Id = 1, ServiceName = "Kleiner Service" },
-        new Service { Id = 2, ServiceName = "Großer Service" },
-        new Service { Id = 3, ServiceName = "Rennskiservice" },
-        new Service { Id = 4, ServiceName = "Bindung montieren und einstellen" },
-        new Service { Id = 5, ServiceName = "Fell zuschneiden" },
-        new Service { Id = 6, ServiceName = "Heißwachsen" }
-    );
+                new Service { Id = 1, ServiceName = "Kleiner Service", Price = 49 },
+                new Service { Id = 2, ServiceName = "Großer Service", Price = 69 },
+                new Service { Id = 3, ServiceName = "Rennskiservice", Price = 99 },
+                new Service { Id = 4, ServiceName = "Bindung montieren und einstellen", Price = 39 },
+                new Service { Id = 5, ServiceName = "Fell zuschneiden", Price = 25 },
+                new Service { Id = 6, ServiceName = "Heißwachsen", Price = 18 }
+            );
 
             // Seed Daten für Status
             modelBuilder.Entity<Status>().HasData(
@@ -43,12 +54,12 @@ namespace JetstreamApi.Data
 
             // Seed Daten für Priorities
             modelBuilder.Entity<Priority>().HasData(
-                new Priority { Id = 1, PriorityName = "Tief" },
-                new Priority { Id = 2, PriorityName = "Standard" },
-                new Priority { Id = 3, PriorityName = "Hoch" }
+                new Priority { Id = 1, PriorityName = "Tief", Price = 0 },
+                new Priority { Id = 2, PriorityName = "Standard", Price = 5 },
+                new Priority { Id = 3, PriorityName = "Hoch", Price = 10 }
             );
 
-            // Seed für Services
+            // Seed Daten für ServiceRequest
             modelBuilder.Entity<ServiceRequest>().HasData(
                 new ServiceRequest 
                 {
@@ -61,7 +72,6 @@ namespace JetstreamApi.Data
                     CreateDate = DateTime.Now,
                     PickupDate = DateTime.Now.AddDays(1),
                     ServiceId = 1,
-                    Price = 100.00M,
                     StatusId = 1,
                     Comment = "Erster Kommentar"
                 },
@@ -72,11 +82,10 @@ namespace JetstreamApi.Data
                     Lastname = "Musterfrau",
                     Email = "maria.musterfrau@example.com",
                     Phone = "0987654321",
-                    PriorityId = 2,
+                    PriorityId = 3,
                     CreateDate = DateTime.Now,
                     PickupDate = DateTime.Now.AddDays(2),
                     ServiceId = 2,
-                    Price = 80.50M,
                     StatusId = 2,
                     Comment = "Zweiter Kommentar"
                 },
@@ -87,11 +96,10 @@ namespace JetstreamApi.Data
                     Lastname = "Doe",
                     Email = "johannes.doe@example.com",
                     Phone = "1122334455",
-                    PriorityId = 1,
+                    PriorityId = 3,
                     CreateDate = DateTime.Now,
                     PickupDate = DateTime.Now.AddDays(3),
                     ServiceId = 3,
-                    Price = 75.00M,
                     StatusId = 3,
                     Comment = "Dritter Kommentar"
                 },
@@ -106,7 +114,6 @@ namespace JetstreamApi.Data
                     CreateDate = DateTime.Now,
                     PickupDate = DateTime.Now.AddDays(4),
                     ServiceId = 4,
-                    Price = 120.00M,
                     StatusId = 2,
                     Comment = "Vierter Kommentar"
                 },
@@ -121,11 +128,50 @@ namespace JetstreamApi.Data
                     CreateDate = DateTime.Now,
                     PickupDate = DateTime.Now.AddDays(5),
                     ServiceId = 5,
-                    Price = 200.00M,
                     StatusId = 1,
                     Comment = "Fünfter Kommentar"
                 }
                 );
-         }
+
+            var users = new List<User>();
+            var userPasswords = new Dictionary<int, string>
+            {
+                {1, "Password1"},
+                {2, "Password2"},
+                {3, "Password3"},
+                {4, "Password4"},
+                {5, "Password5"},
+                {6, "Password6"},
+                {7, "Password7"},
+                {8, "Password8"},
+                {9, "Password9"},
+                {10, "Password10"}
+            };
+
+            foreach (var pair in userPasswords)
+            {
+                CreatePasswordHash(pair.Value, out byte[] passwordHash, out byte[] passwordSalt);
+
+                users.Add(new User
+                {
+                    Id = pair.Key,
+                    UserName = $"user{pair.Key}",
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
+                    IsLocked = false
+                });
+            }
+
+            modelBuilder.Entity<User>().HasData(users);
+        }
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
     }
 }

@@ -10,5 +10,8 @@ namespace JetstreamApi.Models
         [Required]
         [MaxLength(50)]
         public string PriorityName { get; set; }
+
+        [Required]
+        public decimal Price { get; set; }
     }
 }

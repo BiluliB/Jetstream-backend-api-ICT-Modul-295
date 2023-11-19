@@ -19,15 +19,20 @@ namespace JetstreamApi.Controllers
         }
 
         [HttpPost("login")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
-        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserLoginDTO))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO model)
         {
-            if (!_userService.VerifyPassword(model.UserName, model.Password))
+            try
             {
-                return Unauthorized("Invalid Credentials");
+                if (!_userService.VerifyPassword(model.UserName, model.Password))
+                {
+                    return Unauthorized("Invalid Credentials");
+                }
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
-
             var token = _tokenService.CreateToken(model.UserName);
             return Ok(new JsonResult(new {
                 Username = model.UserName,
@@ -37,8 +42,7 @@ namespace JetstreamApi.Controllers
         }
 
         [HttpPost("create")]
-        //[Authorize()]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserLoginDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> create([FromBody] UserLoginDTO model)

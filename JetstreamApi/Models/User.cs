@@ -14,6 +14,10 @@ namespace JetstreamApi.Models
 
         public byte[] PasswordSalt { get; set; }
 
+        public int PasswordInputAttempt { get; set; } = 0;
+
+        public bool IsLocked { get; set; }
+
 
     }
 }

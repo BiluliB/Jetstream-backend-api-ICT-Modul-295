@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using JetstreamApi.Models;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace JetstreamApi.DTO
 {
@@ -25,6 +27,7 @@ namespace JetstreamApi.DTO
 
         [Required]
         public int PriorityId { get; set; }
+        public Priority Priority {  get; set; }
 
         [Required]
         public DateTime CreateDate { get; set; }
@@ -34,10 +37,13 @@ namespace JetstreamApi.DTO
 
         [Required]
         public int ServiceId { get; set; }
+        public Service Service {  get; set; }
 
         [Required]
         public decimal Price { get; set; }
+
         public int StatusId { get; set; }
+        public Status Status { get; set; }
 
         [MaxLength(500)]
         public string Comment { get; set; }
