@@ -10,6 +10,5 @@ namespace JetstreamApi.Models
         [Required]
         [MaxLength(50)]
         public string StatusName { get; set; }
-
     }
 }

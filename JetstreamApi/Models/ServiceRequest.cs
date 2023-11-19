@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Proxies;
 
 namespace JetstreamApi.Models
 {
@@ -49,19 +47,5 @@ namespace JetstreamApi.Models
 
         public int? UserId { get; set; }
         public virtual User User { get; set; }
-
-
-
-
-       
-        
-
-       
-       
-
-        
-        
-
-
     }
 }

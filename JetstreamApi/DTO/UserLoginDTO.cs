@@ -9,6 +9,5 @@ namespace JetstreamApi.DTO
 
         [Required]
         public string Password { get; set; }
-
     }
 }

@@ -35,9 +35,6 @@ namespace JetstreamApi
             builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
             builder.Services.AddControllers();
            
-
-            
-
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -70,7 +67,7 @@ namespace JetstreamApi
                 });
             });
 
-
+            //Add JWT Authentification 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -94,7 +91,7 @@ namespace JetstreamApi
                 app.UseSwaggerUI();
             }
 
-                        app.UseMiddleware<ExceptionHandlingMiddleware>();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

@@ -1,5 +1,4 @@
 ﻿using JetstreamApi.Models;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace JetstreamApi.DTO
@@ -22,7 +21,7 @@ namespace JetstreamApi.DTO
         public string Email { get; set; }
 
         [Required]
-        [Phone]
+        [RegularExpression(@"^(\+\d{1,3}[- ]?)?\d{10}$", ErrorMessage = "Invalid phone number")]
         public string Phone { get; set; }
 
         [Required]

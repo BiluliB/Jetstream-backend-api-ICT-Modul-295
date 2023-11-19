@@ -9,6 +9,5 @@ namespace JetstreamApi.DTO
 
         [Required]
         public string UserName { get; set; }
-
     }
 }

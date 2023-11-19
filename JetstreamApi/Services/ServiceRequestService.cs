@@ -1,12 +1,9 @@
 ﻿using JetstreamApi.Data;
 using JetstreamApi.DTO;
 using JetstreamApi.DTOs;
+using JetstreamApi.Interfaces;
 using JetstreamApi.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using JetstreamApi.Interfaces;
 
 namespace JetstreamApi.Services
 {
@@ -19,7 +16,6 @@ namespace JetstreamApi.Services
             _context = context;
         }
 
-        
         public async Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync()
         {
             var serviceRequests = await _context.ServiceRequests.Where(s => s.StatusId != 4).ToListAsync();
@@ -141,8 +137,6 @@ namespace JetstreamApi.Services
             return serviceRequestDTOs;
         }
 
-
-
         public async Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto)
         {
             var serviceRequest = new ServiceRequest
@@ -204,7 +198,6 @@ namespace JetstreamApi.Services
                 throw new KeyNotFoundException("ServiceRequest not found.");
             }
         }
-
 
         public async Task DeleteServiceRequestAsync(int id)
         {

@@ -40,7 +40,6 @@ namespace JetstreamApi.Controllers
             return Ok(serviceRequestDTO);
         }
 
-
         [HttpGet("priorities/{priority}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestDTO))]
         public async Task<IActionResult> GetAllServiceRequestsByPriorty(int priority)
@@ -64,8 +63,7 @@ namespace JetstreamApi.Controllers
             return CreatedAtAction(nameof(GetServiceRequestById), new { id = serviceRequestDTO.Id }, serviceRequestDTO);
         }
 
-        // PUT: api/ServiceRequests/{id}
-        
+        //PUT: api/ServiceRequests/{id}        
         [HttpPut("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestUpdateDTO))]
@@ -93,7 +91,6 @@ namespace JetstreamApi.Controllers
             await _serviceRequestService.UpdateServiceRequestAsync(serviceRequestUpdateDTO);
             return Ok(serviceRequestUpdateDTO);
         }
-
 
         // DELETE: api/ServiceRequests/{id}
         [HttpDelete("{id}")]

@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Threading.Tasks;
 
 public class ExceptionHandlingMiddleware
 {
@@ -31,13 +27,11 @@ public class ExceptionHandlingMiddleware
         context.Response.ContentType = "application/json";
         string message = exception.Message;
         int statusCode = (int)HttpStatusCode.InternalServerError;
-
-        // Spezielle Behandlung für DbUpdateException
+                
         if (exception is DbUpdateException dbUpdateException)
-        {
-            // Hier können Sie weitere Details aus der DbUpdateException extrahieren
+        {            
             message = "Ein Datenbankfehler ist aufgetreten: " + dbUpdateException.InnerException?.Message;
-            statusCode = (int)HttpStatusCode.BadRequest; // Oder einen anderen passenden Statuscode
+            statusCode = (int)HttpStatusCode.BadRequest; 
         }
 
         context.Response.StatusCode = statusCode;

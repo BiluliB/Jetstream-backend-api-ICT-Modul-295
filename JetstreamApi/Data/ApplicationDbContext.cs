@@ -1,5 +1,6 @@
 ﻿using JetstreamApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Security.Cryptography;
 
 namespace JetstreamApi.Data
@@ -19,20 +20,45 @@ namespace JetstreamApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-           
             base.OnModelCreating(modelBuilder);
 
-            
             //Das UserName nur einmal vorkommen kann
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserName)
                 .IsUnique();
 
+            //Seed Name für Passwörter und User mir ist bewusst das dies nitcht der
+            //beste weg ist aber mir ist kein besserer eingefallen
+            var users = new List<User>();
+            var userPasswords = new Dictionary<int, string>
+            {
+                {1, "Password1"},
+                {2, "Password2"},
+                {3, "Password3"},
+                {4, "Password4"},
+                {5, "Password5"},
+                {6, "Password6"},
+                {7, "Password7"},
+                {8, "Password8"},
+                {9, "Password9"},
+                {10, "Password10"}
+            };
 
+            foreach (var pair in userPasswords)
+            {
+                CreatePasswordHash(pair.Value, out byte[] passwordHash, out byte[] passwordSalt);
 
-                   
+                users.Add(new User
+                {
+                    Id = pair.Key,
+                    UserName = $"user{pair.Key}",
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
+                    IsLocked = false
+                });
+            }
 
+            modelBuilder.Entity<User>().HasData(users);
 
             // Seed Daten für Service
             modelBuilder.Entity<Service>().HasData(
@@ -132,37 +158,6 @@ namespace JetstreamApi.Data
                     Comment = "Fünfter Kommentar"
                 }
                 );
-
-            var users = new List<User>();
-            var userPasswords = new Dictionary<int, string>
-            {
-                {1, "Password1"},
-                {2, "Password2"},
-                {3, "Password3"},
-                {4, "Password4"},
-                {5, "Password5"},
-                {6, "Password6"},
-                {7, "Password7"},
-                {8, "Password8"},
-                {9, "Password9"},
-                {10, "Password10"}
-            };
-
-            foreach (var pair in userPasswords)
-            {
-                CreatePasswordHash(pair.Value, out byte[] passwordHash, out byte[] passwordSalt);
-
-                users.Add(new User
-                {
-                    Id = pair.Key,
-                    UserName = $"user{pair.Key}",
-                    PasswordHash = passwordHash,
-                    PasswordSalt = passwordSalt,
-                    IsLocked = false
-                });
-            }
-
-            modelBuilder.Entity<User>().HasData(users);
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
