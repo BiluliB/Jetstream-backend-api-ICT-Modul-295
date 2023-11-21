@@ -1,6 +1,12 @@
 ## Jetstream Backend API für ICT-Modul 295
 
+## Disclaimer
+
+Bitte beachten Sie, dass das Frontend der Jetstream Backend API derzeit in Bearbeitung ist und daher nur teilweise funktioniert. Ich arbeite mit Hochdruck daran, alle Funktionalitäten so schnell wie möglich vollständig bereitzustellen. Ich bitte um Ihr Verständnis und danken Ihnen für Ihre Geduld.
+
 ### Überblick
+
+### Alle Dokumente des Projekts (Projektdokumentation, Präsentataion, SQL-Befehl, Connectin String) befinden sich im Projektordner -> Files
 
 Die Jetstream Backend API ist eine ASP.NET Core Web API, die speziell für das ICT-Modul 295 entwickelt wurde. Sie ermöglicht die effiziente Verwaltung von Serviceanfragen und Benutzerinteraktionen.
 
@@ -19,7 +25,7 @@ Die Jetstream Backend API ist eine ASP.NET Core Web API, die speziell für das I
 
 - Installieren Sie .NET 7.0 SDK von der offiziellen [.NET-Website](https://dotnet.microsoft.com/download).
 - Ein geeigneter Code-Editor, wie Visual Studio oder Visual Studio Code.
-- SQL Server oder ein äquivalenter Datenbankdienst.
+- Microsoft SQL Server oder ein äquivalenter Datenbankdienst.
 
 ## Projekt klonen oder herunterladen:
 
@@ -28,37 +34,70 @@ Die Jetstream Backend API ist eine ASP.NET Core Web API, die speziell für das I
 ## Abhängigkeiten installieren:
 
 - Öffnen Sie die Kommandozeile oder das Terminal im Projektverzeichnis.
+- Wenn Sie das `dotnet-ef`-Tool noch nicht auf Ihrem System installiert haben, führen Sie bitte zuerst den Befehl `dotnet tool install --global dotnet-ef` aus. Dies ermöglicht Ihnen, Entity Framework Core-bezogene Befehle wie das Erstellen von Migrations und das Aktualisieren der Datenbank auszuführen.
 - Führen Sie den Befehl `dotnet restore` aus, um alle erforderlichen NuGet-Pakete zu installieren.
 
-## Datenbankkonfiguration:
+### Datenbankkonfiguration
 
-- Passen Sie die Verbindungszeichenfolge in der Datei `appsettings.json` an, um Ihre Datenbankkonfiguration widerzuspiegeln.
-- Verwenden Sie Entity Framework Core Migrations, um die Datenbank zu erstellen und zu initialisieren:
-  - Führen Sie `dotnet ef migrations add InitialCreate` aus, um eine Erstmigration zu erstellen.
-  - Führen Sie `dotnet ef database update` aus, um die Datenbank basierend auf den Migrationen zu erstellen.
+Um die Datenbank für die Jetstream Backend API korrekt einzurichten und zu konfigurieren, befolgen Sie diese Schritte:
+
+- Stellen Sie Microsoft SQL Management Studio so ein das SQL accounts zugelassen werden
+
+1. **Anpassen der Verbindungszeichenfolge**:
+
+   - Öffnen Sie die Datei `appsettings.json` in Ihrem Projektverzeichnis.
+   - Ändern Sie die `ServiceRequestDbConnectionString` so, dass sie Ihre spezifische Datenbankkonfiguration widerspiegelt.
+   - Beispiel für eine lokale Datenbankverbindung als root:
+     ```json
+     "ServiceRequestDbConnectionString": "Server=(localdb)\\mssqllocaldb;Database=JetStreamServiceRequest;Trusted_Connection=True;TrustServerCertificate=True;"
+     ```
+
+2. **Datenbankerstellung mit Entity Framework Core Migrations**:
+   - Öffnen Sie die Kommandozeile oder das Terminal im Projektverzeichnis.
+   - Führen Sie den Befehl `dotnet ef migrations add InitialCreate` aus, um eine Erstmigration für Ihre Datenbank zu erstellen.
+   - Führen Sie anschließend den Befehl `dotnet ef database update` aus, um die Datenbank basierend auf der erstellten Migration zu initialisieren und zu erstellen.
+
+### SQL-Nutzerkonfiguration
+
+Nachdem die Datenbank erstellt wurde, führen Sie zusätzliche Schritte zur Konfiguration des Datenbanknutzers durch:
+
+1. **Erstellen des Datenbanknutzers**:
+
+   - Verwenden Sie SQL Server Management Studio (SSMS) oder eine andere SQL-Interface-Anwendung.
+   - Führen Sie das bereitgestellte SQL-Skript `InitJohnyLoginAndDbAccess.sql` aus, um einen neuen Nutzer zu erstellen und ihm Zugriffsrechte zu erteilen.
+   - Das Skript enthält Befehle zum Erstellen eines Logins und Nutzers sowie zum Gewähren von Zugriffsrechten:
+     ```sql
+     CREATE LOGIN [Johny] WITH PASSWORD = 'password';
+     USE [JetStreamServiceRequest];
+     CREATE USER [Johny] FOR LOGIN [Johny];
+     GRANT SELECT, INSERT, UPDATE, DELETE TO [Johny];
+     ```
+
+2. **Aktualisieren der Verbindungszeichenfolge in `appsettings.json`**:
+   - Ändern Sie die Verbindungszeichenfolge erneut, um den neu erstellten Nutzer `Johny` zu verwenden:
+     ```json
+     "ServiceRequestDbConnectionString": "Server=.\\;Database=JetStreamServiceRequest;User ID=Johny;Password=password;TrustServerCertificate=True;"
+     ```
+
+Durch diese Schritte wird sichergestellt, dass Ihre Datenbank korrekt konfiguriert ist und die Anwendung ordnungsgemäß mit ihr interagieren kann.
 
 ## Starten der Anwendung:
 
 - Starten Sie die Anwendung mit `dotnet run`.
 - Die API sollte nun auf dem standardmäßigen oder konfigurierten Port laufen und über einen Webbrowser oder einen API-Client wie Postman erreichbar sein.
 
-## Weitere Konfigurationen:
-
-- Passen Sie die Einstellungen in `appsettings.json` und `appsettings.Development.json` für Entwicklung und Produktion an.
-- Überprüfen Sie die Konfigurationen für Logging, Sicherheit und andere Services.
-
 ## Testen der Jetstream Backend API
 
 ### Testen mit Postman
 
 - **Postman Collection**: Eine Postman Collection wurde für die API erstellt, um die verschiedenen Endpunkte zu testen. Die Collection enthält vordefinierte Anfragen für die verschiedenen API-Funktionen.
-- **Importieren der Collection**: Importieren Sie die bereitgestellte JSON-Datei in Postman, um die Endpunkte schnell und effizient zu testen.
+- **Importieren der Collection**: Importieren Sie die bereitgestellte JSON-Datei die im Files Ordner liegt in Postman, um die Endpunkte schnell und effizient zu testen.
 
 ### Testen mit Swagger
 
 - **Swagger-Integration**: Swagger ist in die API integriert und ermöglicht das Testen der Endpunkte über eine benutzerfreundliche Oberfläche.
 - **API-Dokumentation**: Swagger bietet nicht nur eine Möglichkeit, die API zu testen, sondern stellt auch eine detaillierte Dokumentation der Endpunkte und ihrer Parameter zur Verfügung.
-- **Zugriff auf Swagger**: Um Swagger zu nutzen, starten Sie die API und navigieren Sie im Webbrowser zur Swagger-UI-URL (normalerweise `http://localhost:<port>/swagger`).
+- **Zugriff auf Swagger**: Um Swagger zu nutzen, starten Sie die API und navigieren Sie im Webbrowser zur Swagger-UI-URL (normalerweise `https://localhost:<port>/swagger`).
 
 ### Unit-Tests
 
@@ -132,6 +171,8 @@ erstellt.
 
 ### Framework- und NuGet-Abhängigkeiten
 
+#### JetstreamApi Abhängigkeiten
+
 - **Target Framework**: .NET 7.0
 - **NuGet-Pakete**:
   - `Microsoft.AspNetCore.Authentication.JwtBearer` (Version 7.0.14)
@@ -147,6 +188,20 @@ erstellt.
   - `Serilog.Sinks.File` (Version 5.0.0)
   - `Swashbuckle.AspNetCore` (Version 6.5.0)
   - `System.IdentityModel.Tokens.Jwt` (Version 7.0.3)
+
+Neben den Abhängigkeiten des Hauptprojekts beinhaltet das Unittest-Projekt folgende spezifische Abhängigkeiten:
+
+#### Unittest-Projekt Abhängigkeiten
+
+- **Target Framework**: .NET 7.0
+- **NuGet-Pakete**:
+  - `Microsoft.NET.Test.Sdk` (Version 17.7.1)
+  - `Moq` (Version 4.20.69)
+  - `xunit` (Version 2.4.2)
+  - `xunit.runner.visualstudio` (Version 2.4.5)Studio-Testumgebung ermöglicht.
+  - `coverlet.collector` (Version 3.2.0)
+- **Projektreferenzen**:
+  - Verweis auf das Hauptprojekt (`JetstreamApi.csproj`), was für Integrationstests oder den Zugriff auf die Haupt-API-Komponenten notwendig ist.
 
 ### Hinweise
 
