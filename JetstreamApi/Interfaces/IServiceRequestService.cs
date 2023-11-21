@@ -3,6 +3,9 @@ using JetstreamApi.DTOs;
 
 namespace JetstreamApi.Interfaces
 {
+    /// <summary>
+    /// Interface for the service request service
+    /// </summary>
     public interface IServiceRequestService
     {
         Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto);

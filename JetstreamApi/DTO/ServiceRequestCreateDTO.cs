@@ -2,6 +2,9 @@
 
 namespace JetstreamApi.DTOs
 {
+    /// <summary>
+    /// Data transfer object for creating a new service request DTO
+    /// </summary>
     public class ServiceRequestCreateDTO
     {
         [Required]

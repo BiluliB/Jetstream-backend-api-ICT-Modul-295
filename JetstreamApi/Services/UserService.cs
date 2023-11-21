@@ -4,6 +4,9 @@ using JetstreamApi.Models;
 
 namespace JetstreamApi.Services
 {
+    /// <summary>
+    /// Service for user operations like login and registration
+    /// </summary>
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
@@ -13,6 +16,11 @@ namespace JetstreamApi.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Creates a new user
+        /// </summary>
+        /// <param name="username">username of the user</param>
+        /// <param name="password">password of the user</param>
         public void CreateUser(string username, string password)
         {
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -27,7 +35,14 @@ namespace JetstreamApi.Services
             _context.Users.Add(user);
             _context.SaveChanges();
         }
-
+        /// <summary>
+        /// verifies the password of a user
+        /// </summary>
+        /// <param name="username">username of the user</param>
+        /// <param name="password">password of the user</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public bool VerifyPassword(string username, string password)
         {
             var user = _context.Users.FirstOrDefault(u => u.UserName == username);
@@ -52,12 +67,17 @@ namespace JetstreamApi.Services
                 throw new ArgumentException("Falsches Passwort.");
             }
 
-            // Erfolgreiche Passworteingabe
+            //Successful password entry 
             user.PasswordInputAttempt = 0;
             _context.SaveChanges();
             return true;
         }
-
+        /// <summary>
+        /// creates a password hash for a user
+        /// </summary>
+        /// <param name="password">password of the user</param>
+        /// <param name="passwordHash">password hash of the user</param>
+        /// <param name="passwordSalt">password salt of the user</param>
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())

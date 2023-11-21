@@ -5,9 +5,16 @@ using System.Security.Cryptography;
 
 namespace JetstreamApi.Data
 {
+    /// <summary>
+    /// Database context for the Jetstream API
+    /// </summary>
     public class ApplicationDbContext : DbContext
    
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
+        /// </summary>
+        /// <param name="options">Configuration options for the database context</param>
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
         {
@@ -18,17 +25,20 @@ namespace JetstreamApi.Data
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Priority> Priorities { get; set; }
 
+        /// <summary>
+        /// Configures the model for the Jetstream API database
+        /// </summary>
+        /// <param name="modelBuilder">The builder being used to construct the model for this context</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            //Das UserName nur einmal vorkommen kann
+            //The UserName can onliy be used once
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserName)
                 .IsUnique();
-
-            //Seed Name für Passwörter und User mir ist bewusst das dies nitcht der
-            //beste weg ist aber mir ist kein besserer eingefallen
+            
+            //Seed Name for passwortd and user i know this is not the best way but i could not think of a better one
             var users = new List<User>();
             var userPasswords = new Dictionary<int, string>
             {
@@ -60,7 +70,7 @@ namespace JetstreamApi.Data
 
             modelBuilder.Entity<User>().HasData(users);
 
-            // Seed Daten für Service
+            // Seed Data for Services
             modelBuilder.Entity<Service>().HasData(
                 new Service { Id = 1, ServiceName = "Kleiner Service", Price = 49 },
                 new Service { Id = 2, ServiceName = "Großer Service", Price = 69 },
@@ -70,7 +80,7 @@ namespace JetstreamApi.Data
                 new Service { Id = 6, ServiceName = "Heißwachsen", Price = 18 }
             );
 
-            // Seed Daten für Status
+            // Seed Data for Statuses
             modelBuilder.Entity<Status>().HasData(
                 new Status { Id = 1, StatusName = "Offen" },
                 new Status { Id = 2, StatusName = "In Arbeit" },
@@ -78,14 +88,14 @@ namespace JetstreamApi.Data
                 new Status { Id = 4, StatusName = "Storniert" }
             );
 
-            // Seed Daten für Priorities
+            // Seed Data for Priorities
             modelBuilder.Entity<Priority>().HasData(
                 new Priority { Id = 1, PriorityName = "Tief", Price = 0 },
                 new Priority { Id = 2, PriorityName = "Standard", Price = 5 },
                 new Priority { Id = 3, PriorityName = "Hoch", Price = 10 }
             );
 
-            // Seed Daten für ServiceRequest
+            // Seed Data for ServiceRequests
             modelBuilder.Entity<ServiceRequest>().HasData(
                 new ServiceRequest 
                 {
@@ -159,7 +169,12 @@ namespace JetstreamApi.Data
                 }
                 );
         }
-
+        /// <summary>
+        /// Creates a password hash and salt for the given password
+        /// </summary>
+        /// <param name="password">The password to hash</param>
+        /// <param name="passwordHash">The resulting password hash</param>
+        /// <param name="passwordSalt">The resulting password salt</param>
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())

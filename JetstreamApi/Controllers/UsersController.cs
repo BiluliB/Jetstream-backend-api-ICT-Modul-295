@@ -17,6 +17,11 @@ namespace JetstreamApi.Controllers
             _tokenService = tokenService;
         }
 
+        /// <summary>
+        /// Authenticate a user and return a JWT token
+        /// </summary>
+        /// <param name="userService">The user login Data containing the username and password</param>
+        /// <param name="tokenService">A JSON result with the username and token</param>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserLoginDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -39,7 +44,11 @@ namespace JetstreamApi.Controllers
             }));
            
         }
-
+        /// <summary>
+        /// Creates a new user account with the given username and password
+        /// </summary>
+        /// <param name="model">The user login Data containing the username and password</param>
+        /// <returns>A 200 OK if the user was created successfully</returns>
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserLoginDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

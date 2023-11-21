@@ -2,6 +2,9 @@
 
 namespace JetstreamApi.Models
 {
+    /// <summary>
+    /// Model for a service
+    /// </summary>
     public class Service
     {
         [Key]

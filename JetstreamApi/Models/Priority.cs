@@ -2,6 +2,9 @@
 
 namespace JetstreamApi.Models
 {
+    /// <summary>
+    /// Model for a priority
+    /// </summary>
     public class Priority
     {
         [Key]

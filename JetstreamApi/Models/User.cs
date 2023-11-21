@@ -2,6 +2,9 @@
 
 namespace JetstreamApi.Models
 {
+    /// <summary>
+    /// Model for a user
+    /// </summary>
     public class User
     {
         [Key]

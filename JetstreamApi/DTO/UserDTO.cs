@@ -2,6 +2,9 @@
 
 namespace JetstreamApi.DTO
 {
+    /// <summary>
+    /// Data transfer object for a user DTO
+    /// </summary>
     public class UserDTO
     {
         [Key]

@@ -12,12 +12,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5039/api/ServiceRequests",
-					"protocol": "http",
+					"raw": "{{host}}/api/ServiceRequests",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "5039",
 					"path": [
 						"api",
 						"ServiceRequests"
@@ -32,12 +30,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5039/api/ServiceRequests/1",
-					"protocol": "http",
+					"raw": "{{host}}/api/ServiceRequests/1",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "5039",
 					"path": [
 						"api",
 						"ServiceRequests",
@@ -62,12 +58,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5039/api/ServiceRequests/",
-					"protocol": "http",
+					"raw": "{{host}}/api/ServiceRequests/",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "5039",
 					"path": [
 						"api",
 						"ServiceRequests",
@@ -92,12 +86,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5039/api/ServiceRequests/6",
-					"protocol": "http",
+					"raw": "{{host}}/api/ServiceRequests/6",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "5039",
 					"path": [
 						"api",
 						"ServiceRequests",
@@ -114,7 +106,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"id\": 0,\r\n  \"firstname\": \"string\",\r\n  \"lastname\": \"string\",\r\n  \"email\": \"user@example.com\",\r\n  \"phone\": \"1773066907\",\r\n  \"priorityId\": 0,\r\n  \"priority\": {\r\n    \"id\": 0,\r\n    \"priorityName\": \"string\",\r\n    \"price\": 0\r\n  },\r\n  \"createDate\": \"2023-11-19T19:31:51.390Z\",\r\n  \"pickupDate\": \"2023-11-19T19:31:51.390Z\",\r\n  \"serviceId\": 0,\r\n  \"service\": {\r\n    \"id\": 0,\r\n    \"serviceName\": \"string\",\r\n    \"price\": 0\r\n  },\r\n  \"price\": 0,\r\n  \"statusId\": 0,\r\n  \"status\": {\r\n    \"id\": 0,\r\n    \"statusName\": \"string\"\r\n  },\r\n  \"comment\": \"string\"\r\n}",
+					"raw": "{\r\n  \"id\": 5,\r\n  \"firstname\": \"string\",\r\n  \"lastname\": \"string\",\r\n  \"email\": \"user@example.com\",\r\n  \"phone\": \"1773066907\",\r\n  \"priorityId\": 0,\r\n  \"priority\": {\r\n    \"id\": 0,\r\n    \"priorityName\": \"string\",\r\n    \"price\": 0\r\n  },\r\n  \"createDate\": \"2023-11-19T19:31:51.390Z\",\r\n  \"pickupDate\": \"2023-11-19T19:31:51.390Z\",\r\n  \"serviceId\": 0,\r\n  \"service\": {\r\n    \"id\": 0,\r\n    \"serviceName\": \"string\",\r\n    \"price\": 0\r\n  },\r\n  \"price\": 0,\r\n  \"statusId\": 0,\r\n  \"status\": {\r\n    \"id\": 0,\r\n    \"statusName\": \"string\"\r\n  },\r\n  \"comment\": \"string\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -122,16 +114,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5039/api/ServiceRequests/9",
-					"protocol": "http",
+					"raw": "{{host}}/api/ServiceRequests/4",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "5039",
 					"path": [
 						"api",
 						"ServiceRequests",
-						"9"
+						"4"
 					]
 				}
 			},
@@ -184,7 +174,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"userName\": \"user1\",\r\n  \"password\": \"Password1\"\r\n}",
+					"raw": "{\r\n  \"userName\": \"{{$randomUUID}}\",\r\n  \"password\": \"Password1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -192,7 +182,10 @@
 					}
 				},
 				"url": {
-					"raw": "/api/users/create",
+					"raw": "{{host}}/api/users/create",
+					"host": [
+						"{{host}}"
+					],
 					"path": [
 						"api",
 						"users",

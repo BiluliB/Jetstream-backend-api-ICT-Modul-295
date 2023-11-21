@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace JetstreamApi.DTO
 {
+    /// <summary>
+    /// Data transfer object for a service request DTO
+    /// </summary>
     public class ServiceRequestDTO
     {
         [Key]

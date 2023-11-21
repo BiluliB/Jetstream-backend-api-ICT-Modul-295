@@ -6,6 +6,9 @@ using System.Text;
 
 namespace JWTAuthentication.Services
 {
+    /// <summary>
+    /// Service for generating tokens
+    /// </summary>
     public class TokenService : ITokenService
     {
         //Injecting IConfiguration into this class in order to read Token Key from the configuration file

@@ -7,10 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JetstreamApi.Services
 {
+    /// <summary>
+    /// Service for managing service requests.
+    /// </summary>
     public class ServiceRequestService : IServiceRequestService
     {
         private readonly ApplicationDbContext _context;
-
+        
         public ServiceRequestService(ApplicationDbContext context)
         {
             _context = context;
@@ -39,6 +42,11 @@ namespace JetstreamApi.Services
             }).ToList();
         }
 
+        /// <summary>
+        /// ServiceRequestDTO by Id
+        /// </summary>
+        /// <param name="id">id of the serviceRequest</param>
+        /// <returns>mapped ServiceRequestDTO</returns>
         public async Task<ServiceRequestDTO> GetServiceRequestByIdAsync(int id)
         {
             ServiceRequest? serviceRequest = null;
@@ -70,7 +78,11 @@ namespace JetstreamApi.Services
                 Comment = serviceRequest.Comment
             };
         }
-
+        /// <summary>
+        /// ServiceRequestDTO by PriorityId
+        /// </summary>
+        /// <param name="protity">mapped ServiceRequestDTO</param>
+        /// <returns>List of mapped ServiceRequestDTO</returns>
         public async Task<List<ServiceRequestDTO>> GetAllServiceRequestsByPriorty(int protity)
         {
             var priorities = await _context.ServiceRequests.Where(s => s.PriorityId == protity).ToListAsync();
@@ -94,6 +106,11 @@ namespace JetstreamApi.Services
             }).ToList();
         }
 
+        /// <summary>
+        /// ServiceRequestDTO by StatusId
+        /// </summary>
+        /// <param name="sort">mapped ServiceRequestDTO</param>
+        /// <returns>Default sort by StatusId and Pickupdate, priority sort by priorityId and PickupDate</returns>
         public async Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync(string sort)
         {
             IQueryable<ServiceRequest> query = _context.ServiceRequests.Where(s => s.StatusId != 4);
@@ -136,7 +153,11 @@ namespace JetstreamApi.Services
 
             return serviceRequestDTOs;
         }
-
+        /// <summary>
+        /// Create ServiceRequestDTO and calculate total price
+        /// </summary>
+        /// <param name="dto">mapped ServiceRequestDTO</param>
+        /// <returns>serviceRequestDTO</returns>
         public async Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto)
         {
             // Fetch prices for Service and Priority
@@ -193,7 +214,12 @@ namespace JetstreamApi.Services
                 Comment = serviceRequest.Comment
             };
         }
-
+        /// <summary>
+        /// Update ServiceRequestDTO
+        /// </summary>
+        /// <param name="Id">id of the serviceRequest</param>
+        /// <param name="dto">dto of the serviceRequest</param>
+        /// <returns>id and dto of the serviceRequestDTO</returns>
         public async Task<ServiceRequestDTO?> UpdateServiceRequestAsync(int Id, ServiceRequestUpdateDTO dto)
         {
             var serviceRequest = await _context.ServiceRequests.FindAsync(Id);
@@ -230,13 +256,14 @@ namespace JetstreamApi.Services
                     StatusId = serviceRequest.StatusId,
                     Status = serviceRequest.Status,
                     Comment = serviceRequest.Comment
-                };
-            
-            
-            
-                
+                };    
         }
-
+        /// <summary>
+        /// Delete ServiceRequestDTO
+        /// </summary>
+        /// <param name="id">Servicerequest id mapped ServiceRequestDTO</param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException">ServicRequest not found</exception>
         public async Task DeleteServiceRequestAsync(int id)
         {
             var serviceRequest = await _context.ServiceRequests.FindAsync(id);

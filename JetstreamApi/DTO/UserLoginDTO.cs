@@ -2,6 +2,9 @@
 
 namespace JetstreamApi.DTO
 {
+    /// <summary>
+    /// Data transfer object for a user login DTO
+    /// </summary>
     public class UserLoginDTO
     {
         [Required]

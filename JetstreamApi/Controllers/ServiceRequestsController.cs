@@ -8,6 +8,7 @@ namespace JetstreamApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+  
     public class ServiceRequestsController : ControllerBase
     {
         private readonly IServiceRequestService _serviceRequestService;
@@ -16,7 +17,11 @@ namespace JetstreamApi.Controllers
         {
             _serviceRequestService = serviceRequestService;
         }
-
+        /// <summary>
+        /// Retrieves all service requests matching a specific priority level.
+        /// </summary>
+        /// <param name="sort">The priority level to filter service requests.</param>
+        /// <returns>A list of ServiceRequestDTO objects.</returns>
         [HttpGet]        
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof (List<ServiceRequestDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -26,7 +31,11 @@ namespace JetstreamApi.Controllers
             return Ok(serviceRequestDTOs);
         }
 
-        // GET: api/ServiceRequests/{id}
+        /// <summary>
+        /// Retrieves a specific service request by its ID
+        /// </summary>
+        /// <param name="id">The ID of the service request</param>
+        /// <returns>A ServiceRequestDTO object if found; otherwise, a 404 Not Found</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof (ServiceRequestDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -39,7 +48,11 @@ namespace JetstreamApi.Controllers
             }
             return Ok(serviceRequestDTO);
         }
-
+        /// <summary>
+        /// Retrieves all service requests matching a specific priority level
+        /// </summary>
+        /// <param name="priority">The priority level to filter service requests</param>
+        /// <returns>A list of ServiceRequestDTO objects</returns>
         [HttpGet("priorities/{priority}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestDTO))]
         public async Task<IActionResult> GetAllServiceRequestsByPriorty(int priority)
@@ -48,7 +61,11 @@ namespace JetstreamApi.Controllers
             return Ok(serviceRequestDTOs);
         }
 
-        // POST: api/ServiceRequests
+        /// <summary>
+        /// Creates a new service request from the provided DTO
+        /// </summary>
+        /// <param name="serviceRequestCreateDTO">The DTO containing service request data</param>
+        /// <returns>A newly created ServiceRequestDTO object</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestCreateDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -63,7 +80,12 @@ namespace JetstreamApi.Controllers
             return CreatedAtAction(nameof(GetServiceRequestById), new { id = serviceRequestDTO.Id }, serviceRequestDTO);
         }
 
-        //PUT: api/ServiceRequests/{id}        
+        /// <summary>
+        /// Updates an existing service request identified by its ID with the provided DTO data.
+        /// </summary>
+        /// <param name="id">The ID of the service request to update.</param>
+        /// <param name="serviceRequestUpdateDTO">The DTO containing updated data for the service request.</param>
+        /// <returns>The updated ServiceRequestDTO object if found; otherwise, a 404 Not Found.</returns>       
         [HttpPut("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestUpdateDTO))]
@@ -85,7 +107,11 @@ namespace JetstreamApi.Controllers
             return Ok(updatedServiceRequest);
         }
 
-        // DELETE: api/ServiceRequests/{id}
+        /// <summary>
+        /// Deletes a service request identified by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the service request to delete.</param>
+        /// <returns>A 200 OK if successful; otherwise, a 404 Not Found.</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

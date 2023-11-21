@@ -2,6 +2,9 @@
 
 namespace JetstreamApi.Models
 {
+    /// <summary>
+    /// Model for a status
+    /// </summary>
     public class Status
     {
         [Key]
