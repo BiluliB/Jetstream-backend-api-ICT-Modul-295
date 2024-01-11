@@ -62,14 +62,26 @@ namespace JetstreamApi.Services
 
         public async Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO createDto)
         {
-            // Mappe das DTO auf das Modell
             var serviceRequest = _mapper.Map<ServiceRequest>(createDto);
 
-            // Setze den Standardstatus, falls nicht bereits im DTO gesetzt
             if (serviceRequest.StatusId == 0)
             {
-                serviceRequest.StatusId = 1; // Der Standardstatus 'Offen'
+                serviceRequest.StatusId = 1;
             }
+
+            // Preise für Service und Priority abrufen
+            var servicePrice = await _context.Services
+                .Where(s => s.Id == serviceRequest.ServiceId)
+                .Select(s => s.Price)
+                .FirstOrDefaultAsync();
+
+            var priorityPrice = await _context.Priorities
+                .Where(p => p.Id == serviceRequest.PriorityId)
+                .Select(p => p.Price)
+                .FirstOrDefaultAsync();
+
+            // Gesamtbetrag berechnen
+            serviceRequest.TotalPrice_CHF = servicePrice + priorityPrice;
 
             _context.ServiceRequests.Add(serviceRequest);
             await _context.SaveChangesAsync();
@@ -79,9 +91,9 @@ namespace JetstreamApi.Services
             await _context.Entry(serviceRequest).Reference(s => s.Service).LoadAsync();
             await _context.Entry(serviceRequest).Reference(s => s.Status).LoadAsync();
 
-            // Mappe das Modell zurück auf das DTO
             return _mapper.Map<ServiceRequestDTO>(serviceRequest);
         }
+
 
         public async Task<ServiceRequestDTO> UpdateServiceRequestAsync(int id, ServiceRequestUpdateDTO updateDto)
         {

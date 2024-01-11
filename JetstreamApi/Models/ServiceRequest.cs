@@ -41,7 +41,7 @@ namespace JetstreamApi.Models
         public virtual Service Service { get; set; }
 
         [Required]
-        public decimal Price { get; set; }
+        public decimal TotalPrice_CHF { get; set; }
 
         [Required]
         public int StatusId { get; set; }
