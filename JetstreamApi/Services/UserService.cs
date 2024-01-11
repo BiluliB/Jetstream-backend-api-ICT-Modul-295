@@ -1,4 +1,5 @@
-﻿using JetstreamApi.Data;
+﻿using JetstreamApi.Common;
+using JetstreamApi.Data;
 using JetstreamApi.Interfaces;
 using JetstreamApi.Models;
 
@@ -21,7 +22,7 @@ namespace JetstreamApi.Services
         /// </summary>
         /// <param name="username">username of the user</param>
         /// <param name="password">password of the user</param>
-        public void CreateUser(string username, string password)
+        public void CreateUser(string username, string password, Roles role)
         {
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -29,7 +30,8 @@ namespace JetstreamApi.Services
             {
                 UserName = username,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
+                PasswordSalt = passwordSalt,
+                Role = role
             };
 
             _context.Users.Add(user);
@@ -95,5 +97,30 @@ namespace JetstreamApi.Services
                 return computedHash.SequenceEqual(passwordHash);
             }
         }
+
+        /// <summary>
+        /// Unlocks a locked user account.
+        /// </summary>
+        /// <param name="username">The username of the user to unlock.</param>
+        public void UnlockUser(string username)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.UserName == username);
+            if (user == null) throw new ArgumentException("Benutzername nicht gefunden.");
+
+            if (!user.IsLocked)
+            {
+                throw new InvalidOperationException("Benutzerkonto ist nicht gesperrt.");
+            }
+
+            user.IsLocked = false;
+            user.PasswordInputAttempt = 0;
+            _context.SaveChanges();
+        }
+
+        public User GetUserByUsername(string userName)
+        {
+            return _context.Users.FirstOrDefault(u => u.UserName == userName);
+        }
+
     }
 }

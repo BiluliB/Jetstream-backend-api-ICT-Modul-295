@@ -28,7 +28,7 @@ namespace JetstreamApi.Tests
             // Arrange
             var userLoginDto = new UserLoginDTO { UserName = "user", Password = "password" };
             _mockUserService.Setup(s => s.VerifyPassword(userLoginDto.UserName, userLoginDto.Password)).Returns(true);
-            _mockTokenService.Setup(s => s.CreateToken(userLoginDto.UserName)).Returns("test_token");
+            _mockTokenService.Setup(s => s.CreateToken(userLoginDto.UserName, It.IsAny<string>())).Returns("test_token");
 
             // Act
             var result = await _controller.Login(userLoginDto);
@@ -37,6 +37,7 @@ namespace JetstreamApi.Tests
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.NotNull(okResult.Value);
         }
+
 
         [Fact]
         public async Task Login_Exception_ReturnsBadRequest()

@@ -5,6 +5,6 @@
     /// </summary>
     public interface ITokenService
     {
-        string CreateToken(string username);
+        string CreateToken(string username, string role);
     }
 }

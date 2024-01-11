@@ -18,12 +18,14 @@ namespace JWTAuthentication.Services
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
         }
 
-        public string CreateToken(string username)
+        public string CreateToken(string username, string role)
         {
             //Creating Claims. You can add more information in these claims. For example email id.
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId, username)
+                new Claim(JwtRegisteredClaimNames.NameId, username),
+                new Claim(ClaimTypes.Role, role)
+
             };
 
             //Creating credentials. Specifying which type of Security Algorithm we are using

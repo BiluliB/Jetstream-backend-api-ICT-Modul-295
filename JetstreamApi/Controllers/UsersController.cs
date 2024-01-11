@@ -1,5 +1,6 @@
 ﻿using JetstreamApi.DTO;
 using JetstreamApi.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JetstreamApi.Controllers
@@ -29,34 +30,75 @@ namespace JetstreamApi.Controllers
         {
             try
             {
-                if (!_userService.VerifyPassword(model.UserName, model.Password))
+                var user = _userService.GetUserByUsername(model.UserName);
+                if (user == null || !_userService.VerifyPassword(model.UserName, model.Password))
                 {
                     return Unauthorized("Invalid Credentials");
                 }
-            }catch (Exception ex)
+
+                var token = _tokenService.CreateToken(model.UserName, user.Role.ToString());
+                return Ok(new JsonResult(new
+                {
+                    Username = model.UserName,
+                    Token = token
+                }));
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            var token = _tokenService.CreateToken(model.UserName);
-            return Ok(new JsonResult(new {
-                Username = model.UserName,
-                Token = token
-            }));
-           
         }
+
         /// <summary>
         /// Creates a new user account with the given username and password
         /// </summary>
         /// <param name="model">The user login Data containing the username and password</param>
         /// <returns>A 200 OK if the user was created successfully</returns>
         [HttpPost("create")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserLoginDTO))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> create([FromBody] UserLoginDTO model)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> Create([FromBody] UserCreateDTO model)
         {
-            _userService.CreateUser(model.UserName, model.Password);
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                _userService.CreateUser(model.UserName, model.Password, model.Role);
+                return Ok($"Benutzer {model.UserName} mit der Rolle {model.Role} wurde erfolgreich erstellt.");
+            }
+            catch (Exception ex)
+            {
+                // Fehlerbehandlung
+                return BadRequest(ex.Message);
+            }
         }
+
+
+        [HttpPost("unlock")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Roles = "ADMIN,USER")]
+        public IActionResult UnlockUser([FromBody] UnlockUserDTO model)
+        {
+            try
+            {
+                _userService.UnlockUser(model.UserName);
+                return Ok($"Benutzerkonto {model.UserName} wurde erfolgreich entsperrt.");
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

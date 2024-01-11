@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JetstreamApi.Interfaces;
 using JWTAuthentication.Services;
+using AutoMapper;
 
 namespace JetstreamApi
 {
@@ -16,7 +17,7 @@ namespace JetstreamApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            
             // Add Serilogger
             var logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Configuration)
@@ -28,6 +29,9 @@ namespace JetstreamApi
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceRequestDbConnectionString")).UseLazyLoadingProxies());
+
+            // Add Automapper
+            builder.Services.AddAutoMapper(typeof(Program));
 
             // Add services to the container.
             builder.Services.AddSingleton<ITokenService, TokenService>();
@@ -41,7 +45,7 @@ namespace JetstreamApi
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JestreamApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "JestreamApi", Version = "v2" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -85,18 +89,22 @@ namespace JetstreamApi
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+            //In production mode sollte es im development sein
+            //if (app.Environment.IsDevelopment())
+            //{
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            //}
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles(); 
+            //app.UseDefaultFiles();
+            //app.UseStaticFiles(); 
 
             app.UseAuthentication();
 

@@ -12,7 +12,6 @@ public class ExceptionHandlingMiddleware
     {
         _next = next;
     }
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -23,8 +22,25 @@ public class ExceptionHandlingMiddleware
         {
             await HandleExceptionAsync(context, ex);
         }
+        // Handle 401 Unauthorized Forbidden
+        if (context.Response.StatusCode == 401 && context.Response.ContentLength == null)
+        {
+            await context.Response.WriteAsJsonAsync(new
+            {
+                Message = "Zugriff verweigert: Sie haben keine Berechtigung.",
+                StatusCode = context.Response.StatusCode
+            });
+        }
+        // Handle 403 Unterminated Forbidden
+        if (context.Response.StatusCode == 403 && context.Response.ContentLength == null)
+           {
+               await context.Response.WriteAsJsonAsync(new
+               {
+                   Message = "Zugriff verweigert: Sie haben keine Berechtigung.",
+                   StatusCode = context.Response.StatusCode
+               });
+        }
     }
-
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";

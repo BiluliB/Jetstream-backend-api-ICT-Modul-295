@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using JetstreamApi.Common;
 
 namespace JetstreamApi.Models
 {
@@ -20,5 +21,7 @@ namespace JetstreamApi.Models
         public int PasswordInputAttempt { get; set; } = 0;
 
         public bool IsLocked { get; set; }
+
+        public Roles Role { get; set; }
     }
 }

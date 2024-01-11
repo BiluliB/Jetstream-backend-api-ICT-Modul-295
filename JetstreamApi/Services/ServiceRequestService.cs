@@ -4,6 +4,10 @@ using JetstreamApi.DTOs;
 using JetstreamApi.Interfaces;
 using JetstreamApi.Models;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace JetstreamApi.Services
 {
@@ -13,104 +17,14 @@ namespace JetstreamApi.Services
     public class ServiceRequestService : IServiceRequestService
     {
         private readonly ApplicationDbContext _context;
-        
-        public ServiceRequestService(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+
+        public ServiceRequestService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync()
-        {
-            var serviceRequests = await _context.ServiceRequests.Where(s => s.StatusId != 4).ToListAsync();
-
-            return serviceRequests.Select(request => new ServiceRequestDTO
-            {
-                Id = request.Id,
-                Firstname = request.Firstname,
-                Lastname = request.Lastname,
-                Email = request.Email,
-                Phone = request.Phone,
-                PriorityId = request.PriorityId,
-                Priority = request.Priority,
-                CreateDate = request.CreateDate,
-                PickupDate = request.PickupDate,
-                ServiceId = request.ServiceId,
-                Service = request.Service,
-                StatusId = request.StatusId,
-                Status = request.Status,
-                Comment = request.Comment
-            }).ToList();
-        }
-
-        /// <summary>
-        /// ServiceRequestDTO by Id
-        /// </summary>
-        /// <param name="id">id of the serviceRequest</param>
-        /// <returns>mapped ServiceRequestDTO</returns>
-        public async Task<ServiceRequestDTO> GetServiceRequestByIdAsync(int id)
-        {
-            ServiceRequest? serviceRequest = null;
-
-            try
-            {
-                serviceRequest = await _context.ServiceRequests.FirstAsync(s => s.StatusId != 4 && s.Id == id);
-            }catch (Exception ex)
-            {
-                return null;
-            }
-            
-
-            return new ServiceRequestDTO
-            {
-                Id = serviceRequest.Id,
-                Firstname = serviceRequest.Firstname,
-                Lastname = serviceRequest.Lastname,
-                Email = serviceRequest.Email,
-                Phone = serviceRequest.Phone,
-                PriorityId = serviceRequest.PriorityId,
-                Priority = serviceRequest.Priority,
-                CreateDate = serviceRequest.CreateDate,
-                PickupDate = serviceRequest.PickupDate,
-                ServiceId = serviceRequest.ServiceId,
-                Service = serviceRequest.Service,
-                StatusId = serviceRequest.StatusId,
-                Status = serviceRequest.Status,
-                Comment = serviceRequest.Comment
-            };
-        }
-        /// <summary>
-        /// ServiceRequestDTO by PriorityId
-        /// </summary>
-        /// <param name="protity">mapped ServiceRequestDTO</param>
-        /// <returns>List of mapped ServiceRequestDTO</returns>
-        public async Task<List<ServiceRequestDTO>> GetAllServiceRequestsByPriorty(int protity)
-        {
-            var priorities = await _context.ServiceRequests.Where(s => s.PriorityId == protity).ToListAsync();
-
-            return priorities.Select(request => new ServiceRequestDTO
-            {
-                Id = request.Id,
-                Firstname = request.Firstname,
-                Lastname = request.Lastname,
-                Email = request.Email,
-                Phone = request.Phone,
-                PriorityId = request.PriorityId,
-                Priority = request.Priority,
-                CreateDate = request.CreateDate,
-                PickupDate = request.PickupDate,
-                ServiceId = request.ServiceId,
-                Service = request.Service,
-                StatusId = request.StatusId,
-                Status = request.Status,
-                Comment = request.Comment
-            }).ToList();
-        }
-
-        /// <summary>
-        /// ServiceRequestDTO by StatusId
-        /// </summary>
-        /// <param name="sort">mapped ServiceRequestDTO</param>
-        /// <returns>Default sort by StatusId and Pickupdate, priority sort by priorityId and PickupDate</returns>
         public async Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync(string sort)
         {
             IQueryable<ServiceRequest> query = _context.ServiceRequests.Where(s => s.StatusId != 4);
@@ -133,137 +47,69 @@ namespace JetstreamApi.Services
             }
 
             var serviceRequests = await query.ToListAsync();
-            var serviceRequestDTOs = serviceRequests.Select(sr => new ServiceRequestDTO
-            {
-                Id = sr.Id,
-                Firstname = sr.Firstname,
-                Lastname = sr.Lastname,
-                Email = sr.Email,
-                Phone = sr.Phone,
-                PriorityId = sr.PriorityId,
-                Priority = sr.Priority,
-                CreateDate = sr.CreateDate,
-                PickupDate = sr.PickupDate,
-                ServiceId = sr.ServiceId,
-                Service = sr.Service,
-                StatusId = sr.StatusId,
-                Status = sr.Status,
-                Comment = sr.Comment,
-            }).ToList();
 
-            return serviceRequestDTOs;
+            return _mapper.Map<IEnumerable<ServiceRequestDTO>>(serviceRequests);
         }
-        /// <summary>
-        /// Create ServiceRequestDTO and calculate total price
-        /// </summary>
-        /// <param name="dto">mapped ServiceRequestDTO</param>
-        /// <returns>serviceRequestDTO</returns>
-        public async Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto)
+
+
+        public async Task<ServiceRequestDTO> GetServiceRequestByIdAsync(int id)
         {
-            // Fetch prices for Service and Priority
-            var servicePrice = await _context.Services
-                .Where(s => s.Id == dto.ServiceId)
-                .Select(s => s.Price)
-                .FirstOrDefaultAsync();
+            var serviceRequest = await _context.ServiceRequests
+                .FirstOrDefaultAsync(sr => sr.Id == id);
 
-            var priorityPrice = await _context.Priorities
-                .Where(p => p.Id == dto.PriorityId)
-                .Select(p => p.Price)
-                .FirstOrDefaultAsync();
+            return _mapper.Map<ServiceRequestDTO>(serviceRequest);
+        }
 
-            // Calculate total price
-            var totalPrice = servicePrice + priorityPrice;
-            var serviceRequest = new ServiceRequest
+        public async Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO createDto)
+        {
+            // Mappe das DTO auf das Modell
+            var serviceRequest = _mapper.Map<ServiceRequest>(createDto);
+
+            // Setze den Standardstatus, falls nicht bereits im DTO gesetzt
+            if (serviceRequest.StatusId == 0)
             {
-                
-                Firstname = dto.Firstname,
-                Lastname = dto.Lastname,
-                Email = dto.Email,
-                Phone = dto.Phone,
-                PriorityId = dto.PriorityId,
-                CreateDate = dto.CreateDate,
-                PickupDate = dto.PickupDate,
-                ServiceId = dto.ServiceId,
-                StatusId = 1,
-                Comment = dto.Comment
-            };
+                serviceRequest.StatusId = 1; // Der Standardstatus 'Offen'
+            }
 
             _context.ServiceRequests.Add(serviceRequest);
             await _context.SaveChangesAsync();
 
+            // Lade die referenzierten Entitäten, falls benötigt
             await _context.Entry(serviceRequest).Reference(s => s.Priority).LoadAsync();
             await _context.Entry(serviceRequest).Reference(s => s.Service).LoadAsync();
             await _context.Entry(serviceRequest).Reference(s => s.Status).LoadAsync();
 
-            return new ServiceRequestDTO
-            {
-                Id = serviceRequest.Id,
-                Firstname = serviceRequest.Firstname,
-                Lastname = serviceRequest.Lastname,
-                Email = serviceRequest.Email,
-                Phone = serviceRequest.Phone,
-                PriorityId = serviceRequest.PriorityId,
-                Priority = serviceRequest.Priority,
-                CreateDate = serviceRequest.CreateDate,
-                PickupDate = serviceRequest.PickupDate,
-                ServiceId = serviceRequest.ServiceId,
-                Service = serviceRequest.Service,
-                Price = totalPrice,
-                StatusId = serviceRequest.StatusId,
-                Status = serviceRequest.Status,
-                Comment = serviceRequest.Comment
-            };
+            // Mappe das Modell zurück auf das DTO
+            return _mapper.Map<ServiceRequestDTO>(serviceRequest);
         }
-        /// <summary>
-        /// Update ServiceRequestDTO
-        /// </summary>
-        /// <param name="Id">id of the serviceRequest</param>
-        /// <param name="dto">dto of the serviceRequest</param>
-        /// <returns>id and dto of the serviceRequestDTO</returns>
-        public async Task<ServiceRequestDTO?> UpdateServiceRequestAsync(int Id, ServiceRequestUpdateDTO dto)
+
+        public async Task<ServiceRequestDTO> UpdateServiceRequestAsync(int id, ServiceRequestUpdateDTO updateDto)
         {
-            var serviceRequest = await _context.ServiceRequests.FindAsync(Id);
-            if (serviceRequest == null) return null;
-                            
-                serviceRequest.Firstname = dto.Firstname;
-                serviceRequest.Lastname = dto.Lastname;
-                serviceRequest.Email = dto.Email;
-                serviceRequest.Phone = dto.Phone;
-                serviceRequest.PriorityId = dto.PriorityId;
-                serviceRequest.CreateDate = dto.CreateDate;
-                serviceRequest.PickupDate = dto.PickupDate;
-                serviceRequest.ServiceId = dto.ServiceId;
-                serviceRequest.StatusId = dto.StatusId;
-                serviceRequest.Comment = dto.Comment;
+            var serviceRequest = await _context.ServiceRequests
+                .FirstOrDefaultAsync(sr => sr.Id == id);
 
-                _context.Entry(serviceRequest).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+            if (serviceRequest == null)
+            {
+                // Handle the case where the service request doesn't exist
+                return null;
+            }
 
-                return new ServiceRequestDTO
-                {
-                    Id = serviceRequest.Id,
-                    Firstname = serviceRequest.Firstname,
-                    Lastname = serviceRequest.Lastname,
-                    Email = serviceRequest.Email,
-                    Phone = serviceRequest.Phone,
-                    PriorityId = serviceRequest.PriorityId,
-                    Priority = serviceRequest.Priority,
-                    CreateDate = serviceRequest.CreateDate,
-                    PickupDate = serviceRequest.PickupDate,
-                    ServiceId = serviceRequest.ServiceId,
-                    Service = serviceRequest.Service,
-                    Price = serviceRequest.Priority.Price + serviceRequest.Service.Price,
-                    StatusId = serviceRequest.StatusId,
-                    Status = serviceRequest.Status,
-                    Comment = serviceRequest.Comment
-                };    
+            // Überprüfe, ob die PriorityId gültig ist
+            var validPriority = await _context.Priorities.AnyAsync(p => p.Id == updateDto.PriorityId);
+            if (!validPriority)
+            {
+                throw new ArgumentException($"Die PriorityId '{updateDto.PriorityId}' existiert nicht in der Datenbank.");
+            }
+
+            _mapper.Map(updateDto, serviceRequest);
+
+            _context.ServiceRequests.Update(serviceRequest);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<ServiceRequestDTO>(serviceRequest);
         }
-        /// <summary>
-        /// Delete ServiceRequestDTO
-        /// </summary>
-        /// <param name="id">Servicerequest id mapped ServiceRequestDTO</param>
-        /// <returns></returns>
-        /// <exception cref="KeyNotFoundException">ServicRequest not found</exception>
+
+
         public async Task DeleteServiceRequestAsync(int id)
         {
             var serviceRequest = await _context.ServiceRequests.FindAsync(id);
@@ -277,6 +123,27 @@ namespace JetstreamApi.Services
             {
                 throw new KeyNotFoundException("ServiceRequest not found.");
             }
+        }
+
+        public async Task<List<ServiceRequestDTO>> GetAllServiceRequestsByPriorty(int priority)
+        {
+            // Check whether the priority is valid
+            var validPriorities = new int[] { 1, 2, 3 };
+            if (!validPriorities.Contains(priority))
+            {
+                throw new KeyNotFoundException($"Die Priorität '{priority}' existiert nicht. Verwende Sie die ID 1, 2 oder 3.");
+            }
+
+            var serviceRequests = await _context.ServiceRequests
+                .Where(s => s.PriorityId == priority)
+                .ToListAsync();
+
+            return _mapper.Map<List<ServiceRequestDTO>>(serviceRequests);
+        }
+
+        public Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

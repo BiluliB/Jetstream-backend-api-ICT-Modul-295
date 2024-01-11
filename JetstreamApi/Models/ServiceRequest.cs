@@ -40,6 +40,8 @@ namespace JetstreamApi.Models
         public int ServiceId { get; set; }
         public virtual Service Service { get; set; }
 
+        [Required]
+        public decimal Price { get; set; }
 
         [Required]
         public int StatusId { get; set; }

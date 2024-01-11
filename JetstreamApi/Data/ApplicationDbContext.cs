@@ -1,4 +1,5 @@
-﻿using JetstreamApi.Models;
+﻿using JetstreamApi.Common;
+using JetstreamApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Security.Cryptography;
@@ -33,38 +34,50 @@ namespace JetstreamApi.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            //The UserName can onliy be used once
+            // The UserName can only be used once
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserName)
                 .IsUnique();
-            
-            //Seed Name for passwortd and user i know this is not the best way but i could not think of a better one
+
+            // Seed data for users
             var users = new List<User>();
-            var userPasswords = new Dictionary<int, string>
-            {
-                {1, "Password1"},
-                {2, "Password2"},
-                {3, "Password3"},
-                {4, "Password4"},
-                {5, "Password5"},
-                {6, "Password6"},
-                {7, "Password7"},
-                {8, "Password8"},
-                {9, "Password9"},
-                {10, "Password10"}
-            };
 
-            foreach (var pair in userPasswords)
+            // Add admin user
+            CreatePasswordHash("Password", out byte[] adminPasswordHash, out byte[] adminPasswordSalt);
+            users.Add(new User
             {
-                CreatePasswordHash(pair.Value, out byte[] passwordHash, out byte[] passwordSalt);
+                Id = 1,
+                UserName = "admin",
+                PasswordHash = adminPasswordHash,
+                PasswordSalt = adminPasswordSalt,
+                IsLocked = false,
+                Role = Roles.ADMIN
+            });
 
+            // Add additional admin user (admin1)
+            CreatePasswordHash("Password1", out byte[] admin1PasswordHash, out byte[] admin1PasswordSalt);
+            users.Add(new User
+            {
+                Id = 2,
+                UserName = "admin1",
+                PasswordHash = admin1PasswordHash,
+                PasswordSalt = admin1PasswordSalt,
+                IsLocked = false,
+                Role = Roles.ADMIN
+            });
+
+            // Seed data for standard users
+            for (int i = 1; i <= 10; i++)
+            {
+                CreatePasswordHash($"Password{i}", out byte[] userPasswordHash, out byte[] userPasswordSalt);
                 users.Add(new User
                 {
-                    Id = pair.Key,
-                    UserName = $"user{pair.Key}",
-                    PasswordHash = passwordHash,
-                    PasswordSalt = passwordSalt,
-                    IsLocked = false
+                    Id = i + 2, // +2, because we already added two admin users
+                    UserName = $"user{i}",
+                    PasswordHash = userPasswordHash,
+                    PasswordSalt = userPasswordSalt,
+                    IsLocked = false,
+                    Role = Roles.USER
                 });
             }
 

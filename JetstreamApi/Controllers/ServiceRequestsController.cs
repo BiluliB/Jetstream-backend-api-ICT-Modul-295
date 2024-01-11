@@ -53,11 +53,11 @@ namespace JetstreamApi.Controllers
         /// </summary>
         /// <param name="priority">The priority level to filter service requests</param>
         /// <returns>A list of ServiceRequestDTO objects</returns>
-        [HttpGet("priorities/{priority}")]
+        [HttpGet("priorities/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestDTO))]
-        public async Task<IActionResult> GetAllServiceRequestsByPriorty(int priority)
+        public async Task<IActionResult> GetAllServiceRequestsByPriorty(int id)
         {
-            var serviceRequestDTOs = await _serviceRequestService.GetAllServiceRequestsByPriorty(priority);
+            var serviceRequestDTOs = await _serviceRequestService.GetAllServiceRequestsByPriorty(id);
             return Ok(serviceRequestDTOs);
         }
 
@@ -69,6 +69,7 @@ namespace JetstreamApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestCreateDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ADMIN,USER")]
         public async Task<IActionResult> CreateServiceRequest([FromBody] ServiceRequestCreateDTO serviceRequestCreateDTO)
         {
             if (!ModelState.IsValid)
@@ -91,6 +92,7 @@ namespace JetstreamApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestUpdateDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ADMIN,USER")]
         public async Task<IActionResult> UpdateServiceRequest(int id, [FromBody] ServiceRequestUpdateDTO serviceRequestUpdateDTO)
         {
             if (!ModelState.IsValid)
@@ -113,6 +115,7 @@ namespace JetstreamApi.Controllers
         /// <param name="id">The ID of the service request to delete.</param>
         /// <returns>A 200 OK if successful; otherwise, a 404 Not Found.</returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN,USER")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceRequestDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteServiceRequest(int id)   
