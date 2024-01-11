@@ -157,5 +157,23 @@ namespace JetstreamApi.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task AssignServiceRequestToUser(int serviceRequestId, int userId)
+        {
+            var serviceRequest = await _context.ServiceRequests.FindAsync(serviceRequestId);
+            if (serviceRequest == null)
+            {
+                throw new KeyNotFoundException($"Service Request mit der ID {serviceRequestId} wurde nicht gefunden.");
+            }
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User mit der ID {userId} wurde nicht gefunden.");
+            }
+
+            serviceRequest.UserId = userId;
+            await _context.SaveChangesAsync();
+        }
     }
 }

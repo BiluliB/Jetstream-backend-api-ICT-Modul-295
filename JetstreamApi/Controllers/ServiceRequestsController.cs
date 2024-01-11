@@ -129,5 +129,27 @@ namespace JetstreamApi.Controllers
             await _serviceRequestService.DeleteServiceRequestAsync(id);
             return Ok();
         }
+
+        [HttpPost("{Id}/assign/{userId}")]
+        [Authorize(Roles = "ADMIN, USER")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AssignServiceRequestToUser(int Id, int userId)
+        {
+            try
+            {
+                await _serviceRequestService.AssignServiceRequestToUser(Id, userId);
+                return Ok($"Auftrag {Id} wurde erfolgreich dem User {userId} zugewiesen.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

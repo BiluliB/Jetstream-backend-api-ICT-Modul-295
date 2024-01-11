@@ -48,7 +48,8 @@ namespace JetstreamApi.Services
         public bool VerifyPassword(string username, string password)
         {
             var user = _context.Users.FirstOrDefault(u => u.UserName == username);
-            if (user == null) throw new ArgumentException("Benutzername nicht gefunden.");
+            if (user == null)
+                throw new ArgumentException("Benutzername nicht gefunden.");
 
             if (user.IsLocked)
             {
@@ -58,6 +59,8 @@ namespace JetstreamApi.Services
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
                 user.PasswordInputAttempt += 1;
+                _context.SaveChanges();
+
                 if (user.PasswordInputAttempt >= 3)
                 {
                     user.IsLocked = true;
@@ -65,8 +68,8 @@ namespace JetstreamApi.Services
                     throw new InvalidOperationException("Benutzerkonto wurde wegen zu vieler fehlgeschlagener Versuche gesperrt.");
                 }
 
-                _context.SaveChanges();
-                throw new ArgumentException("Falsches Passwort.");
+                int remainingAttempts = 3 - user.PasswordInputAttempt;
+                throw new ArgumentException($"Falsches Passwort. Verbleibende Versuche: {remainingAttempts}");
             }
 
             //Successful password entry 
@@ -74,6 +77,7 @@ namespace JetstreamApi.Services
             _context.SaveChanges();
             return true;
         }
+
         /// <summary>
         /// creates a password hash for a user
         /// </summary>
@@ -116,11 +120,14 @@ namespace JetstreamApi.Services
             user.PasswordInputAttempt = 0;
             _context.SaveChanges();
         }
-
+        /// <summary>
+        /// Gets a user by username
+        /// </summary>
+        /// <param name="userName">The username of the user</param>
+        /// <returns></returns>
         public User GetUserByUsername(string userName)
         {
             return _context.Users.FirstOrDefault(u => u.UserName == userName);
         }
-
     }
 }
