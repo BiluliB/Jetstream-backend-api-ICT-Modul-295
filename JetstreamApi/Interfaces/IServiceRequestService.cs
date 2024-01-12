@@ -8,7 +8,6 @@ namespace JetstreamApi.Interfaces
     /// </summary>
     public interface IServiceRequestService
     {
-        Task AssignServiceRequestToUser(int serviceRequestId, int userId);
         Task<ServiceRequestDTO> CreateServiceRequestAsync(ServiceRequestCreateDTO dto);
         Task DeleteServiceRequestAsync(int id);
         Task<IEnumerable<ServiceRequestDTO>> GetAllServiceRequestsAsync();

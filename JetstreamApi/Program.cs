@@ -37,6 +37,7 @@ namespace JetstreamApi
             builder.Services.AddSingleton<ITokenService, TokenService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IServiceRequestService, ServiceRequestService>();
+            builder.Services.AddScoped<IAssignService, AssignService>();
             builder.Services.AddControllers();
            
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
